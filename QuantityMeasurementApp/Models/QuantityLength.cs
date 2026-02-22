@@ -15,14 +15,24 @@ namespace QuantityMeasurementApp.Models
             this.unit = unit;
         }
 
-        // Convert any unit to base unit (feet)
+        // Convert any unit to base unit (FEET)
         private double ConvertToFeet()
         {
+            // Feet - base unit
             if (unit == LengthUnit.FEET)
                 return value;
 
-            if (unit == LengthUnit.INCH)
+            // Inches - convert to feet
+            if (unit == LengthUnit.INCHES)
                 return value / 12.0;
+
+            // Yards - convert to feet
+            if (unit == LengthUnit.YARDS)
+                return value * 3.0;   // 1 yard = 3 feet
+
+            // Centimeters , convert to inches , then to feet
+            if (unit == LengthUnit.CENTIMETERS)
+                return (value * 0.393701) / 12.0;
 
             return 0;
         }
@@ -30,17 +40,21 @@ namespace QuantityMeasurementApp.Models
         // Override equals method for cross-unit comparison
         public override bool Equals(object? obj)
         {
+            // Same reference check
             if (this == obj)
                 return true;
 
+            // Null or different type check
             if (obj == null || GetType() != obj.GetType())
                 return false;
 
             QuantityLength other = (QuantityLength)obj;
 
-           return this.ConvertToFeet().CompareTo(other.ConvertToFeet()) == 0;
+            // Compare after converting to base unit
+            return this.ConvertToFeet().CompareTo(other.ConvertToFeet()) == 0;
         }
 
+        // Override hashcode
         public override int GetHashCode()
         {
             return ConvertToFeet().GetHashCode();
