@@ -7,73 +7,93 @@ namespace QuantityMeasurementApp.Tests
     [TestClass]
     public class QuantityMeasurementTests
     {
-        private QuantityMeasurementService service;
+        //  FEET TEST CASES 
 
-        // Runs before every test
-        [TestInitialize]
-        public void Setup()
-        {
-            service = new QuantityMeasurementService();
-        }
-
-        //  Same value test
+        // Test 1: Same value should return true
         [TestMethod]
-        public void testEquality_SameValue()
+        public void FeetEquality_SameValue_ReturnsTrue()
         {
-            Feet f1 = new Feet(1.0);
-            Feet f2 = new Feet(1.0);
-
-            bool result = service.AreFeetEqual(f1, f2);
-
+            bool result = QuantityMeasurementService.AreFeetEqual(1.0, 1.0);
             Assert.IsTrue(result);
         }
 
-        //  Different value test
+        // Test 2: Different values should return false
         [TestMethod]
-        public void testEquality_DifferentValue()
+        public void FeetEquality_DifferentValue_ReturnsFalse()
         {
-            Feet f1 = new Feet(1.0);
-            Feet f2 = new Feet(2.0);
-
-            bool result = service.AreFeetEqual(f1, f2);
-
+            bool result = QuantityMeasurementService.AreFeetEqual(1.0, 2.0);
             Assert.IsFalse(result);
         }
 
-        //  Null comparison test
+        // Test 3: Same reference object should return true
         [TestMethod]
-        public void testEquality_NullComparison()
+        public void FeetEquality_SameReference_ReturnsTrue()
         {
             Feet f1 = new Feet(1.0);
-
-            bool result = service.AreFeetEqual(f1, null);
-
-            Assert.IsFalse(result);
+            Assert.IsTrue(f1.Equals(f1));
         }
 
-        //  Same reference test (reflexive property)
+        // Test 4: Null comparison should return false
         [TestMethod]
-        public void testEquality_SameReference()
+        public void FeetEquality_NullComparison_ReturnsFalse()
         {
             Feet f1 = new Feet(1.0);
-
-            bool result = service.AreFeetEqual(f1, f1);
-
-            Assert.IsTrue(result);
+            Assert.IsFalse(f1.Equals(null));
         }
 
-        //  Non-numeric input scenario test
+        // Test 5: Non-numeric / invalid input simulation (null object)
         [TestMethod]
-        public void testEquality_NonNumericInput()
+        public void FeetEquality_InvalidInput_ReturnsFalse()
         {
             Feet f1 = new Feet(1.0);
-
-            // Simulate invalid object (not created)
             Feet f2 = null;
 
-            bool result = service.AreFeetEqual(f1, f2);
+            Assert.IsFalse(f1.Equals(f2));
+        }
 
+
+        //  INCHES TEST CASES 
+
+        // Test 6: Same inches value should return true
+        [TestMethod]
+        public void InchesEquality_SameValue_ReturnsTrue()
+        {
+            bool result = QuantityMeasurementService.AreInchesEqual(5.0, 5.0);
+            Assert.IsTrue(result);
+        }
+
+        // Test 7: Different inches values should return false
+        [TestMethod]
+        public void InchesEquality_DifferentValue_ReturnsFalse()
+        {
+            bool result = QuantityMeasurementService.AreInchesEqual(5.0, 6.0);
             Assert.IsFalse(result);
+        }
+
+        // Test 8: Same reference object should return true
+        [TestMethod]
+        public void InchesEquality_SameReference_ReturnsTrue()
+        {
+            Inches i1 = new Inches(2.0);
+            Assert.IsTrue(i1.Equals(i1));
+        }
+
+        // Test 9: Null comparison should return false
+        [TestMethod]
+        public void InchesEquality_NullComparison_ReturnsFalse()
+        {
+            Inches i1 = new Inches(2.0);
+            Assert.IsFalse(i1.Equals(null));
+        }
+
+        // Test 10: Invalid input simulation (null object)
+        [TestMethod]
+        public void InchesEquality_InvalidInput_ReturnsFalse()
+        {
+            Inches i1 = new Inches(2.0);
+            Inches i2 = null;
+
+            Assert.IsFalse(i1.Equals(i2));
         }
     }
 }
