@@ -28,7 +28,7 @@ namespace QuantityMeasurementApp.Models
             // Safe casting
             Inches other = (Inches)obj;
 
-            // Compare double values safely
+            
             return this.value.CompareTo(other.value) == 0;
         }
 

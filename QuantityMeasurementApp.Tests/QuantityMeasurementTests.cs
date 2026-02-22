@@ -7,93 +7,112 @@ namespace QuantityMeasurementApp.Tests
     [TestClass]
     public class QuantityMeasurementTests
     {
-        //  FEET TEST CASES 
+        // UC1 TESTS – FEET
+       
 
-        // Test 1: Same value should return true
         [TestMethod]
         public void FeetEquality_SameValue_ReturnsTrue()
         {
-            bool result = QuantityMeasurementService.AreFeetEqual(1.0, 1.0);
-            Assert.IsTrue(result);
+            Assert.IsTrue(QuantityMeasurementService.AreFeetEqual(1.0, 1.0));
         }
 
-        // Test 2: Different values should return false
         [TestMethod]
         public void FeetEquality_DifferentValue_ReturnsFalse()
         {
-            bool result = QuantityMeasurementService.AreFeetEqual(1.0, 2.0);
-            Assert.IsFalse(result);
+            Assert.IsFalse(QuantityMeasurementService.AreFeetEqual(1.0, 2.0));
         }
 
-        // Test 3: Same reference object should return true
         [TestMethod]
         public void FeetEquality_SameReference_ReturnsTrue()
         {
-            Feet f1 = new Feet(1.0);
-            Assert.IsTrue(f1.Equals(f1));
+            Feet f = new Feet(1.0);
+            Assert.IsTrue(f.Equals(f));
         }
 
-        // Test 4: Null comparison should return false
         [TestMethod]
         public void FeetEquality_NullComparison_ReturnsFalse()
         {
-            Feet f1 = new Feet(1.0);
-            Assert.IsFalse(f1.Equals(null));
-        }
-
-        // Test 5: Non-numeric / invalid input simulation (null object)
-        [TestMethod]
-        public void FeetEquality_InvalidInput_ReturnsFalse()
-        {
-            Feet f1 = new Feet(1.0);
-            Feet f2 = null;
-
-            Assert.IsFalse(f1.Equals(f2));
+            Feet f = new Feet(1.0);
+            Assert.IsFalse(f.Equals(null));
         }
 
 
-        //  INCHES TEST CASES 
 
-        // Test 6: Same inches value should return true
+        // UC2 TESTS – INCHES
+ 
+
         [TestMethod]
-        public void InchesEquality_SameValue_ReturnsTrue()
+        public void InchEquality_SameValue_ReturnsTrue()
         {
-            bool result = QuantityMeasurementService.AreInchesEqual(5.0, 5.0);
-            Assert.IsTrue(result);
+            Assert.IsTrue(QuantityMeasurementService.AreInchesEqual(5.0, 5.0));
         }
 
-        // Test 7: Different inches values should return false
         [TestMethod]
-        public void InchesEquality_DifferentValue_ReturnsFalse()
+        public void InchEquality_DifferentValue_ReturnsFalse()
         {
-            bool result = QuantityMeasurementService.AreInchesEqual(5.0, 6.0);
-            Assert.IsFalse(result);
+            Assert.IsFalse(QuantityMeasurementService.AreInchesEqual(5.0, 6.0));
         }
 
-        // Test 8: Same reference object should return true
         [TestMethod]
-        public void InchesEquality_SameReference_ReturnsTrue()
+        public void InchEquality_SameReference_ReturnsTrue()
         {
-            Inches i1 = new Inches(2.0);
-            Assert.IsTrue(i1.Equals(i1));
+            Inches i = new Inches(2.0);
+            Assert.IsTrue(i.Equals(i));
         }
 
-        // Test 9: Null comparison should return false
         [TestMethod]
-        public void InchesEquality_NullComparison_ReturnsFalse()
+        public void InchEquality_NullComparison_ReturnsFalse()
         {
-            Inches i1 = new Inches(2.0);
-            Assert.IsFalse(i1.Equals(null));
+            Inches i = new Inches(2.0);
+            Assert.IsFalse(i.Equals(null));
         }
 
-        // Test 10: Invalid input simulation (null object)
-        [TestMethod]
-        public void InchesEquality_InvalidInput_ReturnsFalse()
-        {
-            Inches i1 = new Inches(2.0);
-            Inches i2 = null;
 
-            Assert.IsFalse(i1.Equals(i2));
+        // UC3 TESTS – GENERIC LENGTH
+
+
+        [TestMethod]
+        public void FeetToFeet_SameValue_ReturnsTrue()
+        {
+            Assert.IsTrue(QuantityMeasurementService.AreLengthEqual(1.0, LengthUnit.FEET, 1.0, LengthUnit.FEET));
+        }
+
+        [TestMethod]
+        public void InchToInch_SameValue_ReturnsTrue()
+        {
+            Assert.IsTrue(QuantityMeasurementService.AreLengthEqual(5.0, LengthUnit.INCH, 5.0, LengthUnit.INCH));
+        }
+
+        [TestMethod]
+        public void FeetToInch_Equivalent_ReturnsTrue()
+        {
+            Assert.IsTrue(QuantityMeasurementService.AreLengthEqual(1.0, LengthUnit.FEET, 12.0, LengthUnit.INCH));
+        }
+
+        [TestMethod]
+        public void InchToFeet_Equivalent_ReturnsTrue()
+        {
+            Assert.IsTrue(QuantityMeasurementService.AreLengthEqual(12.0, LengthUnit.INCH, 1.0, LengthUnit.FEET));
+        }
+
+        [TestMethod]
+        public void DifferentValues_ReturnsFalse()
+        {
+            Assert.IsFalse(QuantityMeasurementService.AreLengthEqual(1.0, LengthUnit.FEET, 2.0, LengthUnit.FEET));
+        }
+
+        [TestMethod]
+        public void NullComparison_ReturnsFalse()
+        {
+            QuantityLength q = new QuantityLength(1.0, LengthUnit.FEET);
+            Assert.IsFalse(q.Equals(null));
+        }
+
+        [TestMethod]
+        public void SameReference_ReturnsTrue()
+        {
+            QuantityLength q = new QuantityLength(1.0, LengthUnit.FEET);
+            Assert.IsTrue(q.Equals(q));
         }
     }
 }

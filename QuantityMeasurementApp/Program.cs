@@ -1,4 +1,5 @@
 ﻿using System;
+using QuantityMeasurementApp.Models;
 using QuantityMeasurementApp.Services;
 
 namespace QuantityMeasurementApp
@@ -11,12 +12,12 @@ namespace QuantityMeasurementApp
 
             do
             {
-                // Display menu options
                 Console.WriteLine("\n--- Quantity Measurement Menu ---");
                 Console.WriteLine("1. Check Feet Equality");
                 Console.WriteLine("2. Check Inches Equality");
-                Console.WriteLine("3. Exit");
-                Console.Write("Enter your choice: ");
+                Console.WriteLine("3. Check Length Equality (Generic)");
+                Console.WriteLine("4. Exit");
+                Console.Write("Enter choice: ");
 
                 choice = Convert.ToInt32(Console.ReadLine());
 
@@ -25,49 +26,47 @@ namespace QuantityMeasurementApp
                     switch (choice)
                     {
                         case 1:
-                            // Take feet inputs
                             Console.Write("Enter first feet value: ");
                             double f1 = Convert.ToDouble(Console.ReadLine());
-
                             Console.Write("Enter second feet value: ");
                             double f2 = Convert.ToDouble(Console.ReadLine());
 
-                            // Call service method
-                            bool feetResult = QuantityMeasurementService.AreFeetEqual(f1, f2);
-
-                            Console.WriteLine("Feet Equal: " + feetResult);
+                            Console.WriteLine("Equal: " +
+                                QuantityMeasurementService.AreFeetEqual(f1, f2));
                             break;
 
                         case 2:
-                            // Take inches inputs
                             Console.Write("Enter first inches value: ");
                             double i1 = Convert.ToDouble(Console.ReadLine());
-
                             Console.Write("Enter second inches value: ");
                             double i2 = Convert.ToDouble(Console.ReadLine());
 
-                            // Call service method
-                            bool inchResult = QuantityMeasurementService.AreInchesEqual(i1, i2);
-
-                            Console.WriteLine("Inches Equal: " + inchResult);
+                            Console.WriteLine("Equal: " +
+                                QuantityMeasurementService.AreInchesEqual(i1, i2));
                             break;
 
                         case 3:
-                            Console.WriteLine("Exiting application...");
-                            break;
+                            Console.Write("Enter first value: ");
+                            double v1 = Convert.ToDouble(Console.ReadLine());
+                            Console.WriteLine("Unit: 1=Feet 2=Inch");
+                            LengthUnit u1 = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
 
-                        default:
-                            Console.WriteLine("Invalid choice! Try again.");
+                            Console.Write("Enter second value: ");
+                            double v2 = Convert.ToDouble(Console.ReadLine());
+                            Console.WriteLine("Unit: 1=Feet 2=Inch");
+                            LengthUnit u2 = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
+
+                            Console.WriteLine("Equal: " +
+                                QuantityMeasurementService.AreLengthEqual(v1, u1, v2, u2));
                             break;
                     }
                 }
-                catch (FormatException)
+                catch
                 {
-                    // Handle invalid numeric input
-                    Console.WriteLine("Invalid input! Please enter numeric values.");
+                    Console.WriteLine("Invalid input!");
                 }
 
-            } while (choice != 3);
+            } while (choice != 4);
         }
     }
 }

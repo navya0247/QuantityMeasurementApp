@@ -22,5 +22,15 @@ namespace QuantityMeasurementApp.Services
 
             return i1.Equals(i2);
         }
+
+     
+        // Generic equality check
+        public static bool AreLengthEqual(double v1, LengthUnit u1, double v2, LengthUnit u2)
+        {
+            QuantityLength q1 = new QuantityLength(v1, u1);
+            QuantityLength q2 = new QuantityLength(v2, u2);
+
+            return q1.Equals(q2);
+        }
     }
-}
+    }

@@ -33,7 +33,7 @@ namespace QuantityMeasurementApp.Models
             // Cast safely
             Feet other = (Feet)obj;
 
-            // Compare double values safely
+          
             return this.value.CompareTo(other.value) == 0;
         }
 
