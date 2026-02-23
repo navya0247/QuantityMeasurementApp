@@ -16,7 +16,8 @@ namespace QuantityMeasurementApp
                 Console.WriteLine("1. Check Feet Equality");
                 Console.WriteLine("2. Check Inches Equality");
                 Console.WriteLine("3. Check Length Equality (Generic)");
-                Console.WriteLine("4. Exit");
+                Console.WriteLine("4. Convert Length Units ");
+                Console.WriteLine("5. Exit");
                 Console.Write("Enter choice: ");
 
                 choice = Convert.ToInt32(Console.ReadLine());
@@ -75,7 +76,31 @@ namespace QuantityMeasurementApp
                                 QuantityMeasurementService.AreLengthEqual(v1, u1, v2, u2));
                             break;
 
+                        // ---------- UC5  ----------
                         case 4:
+                            Console.Write("Enter value to convert: ");
+                            double value = Convert.ToDouble(Console.ReadLine());
+
+                            Console.WriteLine("\nConvert FROM:");
+                            Console.WriteLine("1 = Feet");
+                            Console.WriteLine("2 = Inches");
+                            Console.WriteLine("3 = Yards");
+                            Console.WriteLine("4 = Centimeters");
+                            LengthUnit from = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
+
+                            Console.WriteLine("\nConvert TO:");
+                            Console.WriteLine("1 = Feet");
+                            Console.WriteLine("2 = Inches");
+                            Console.WriteLine("3 = Yards");
+                            Console.WriteLine("4 = Centimeters");
+                            LengthUnit to = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
+
+                            double result = QuantityMeasurementService.ConvertLength(value, from, to);
+
+                            Console.WriteLine($"\nConverted Value: {result}");
+                            break;
+
+                        case 5:
                             Console.WriteLine("Exiting...");
                             break;
 
@@ -89,7 +114,7 @@ namespace QuantityMeasurementApp
                     Console.WriteLine("Invalid input!");
                 }
 
-            } while (choice != 4);
+            } while (choice != 5);
         }
     }
 }

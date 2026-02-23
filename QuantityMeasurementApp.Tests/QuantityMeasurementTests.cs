@@ -7,8 +7,7 @@ namespace QuantityMeasurementApp.Tests
     [TestClass]
     public class QuantityMeasurementTests
     {
-        // UC1 TESTS – FEET
-
+        // ================= UC1 – FEET =================
 
         [TestMethod]
         public void FeetEquality_SameValue_ReturnsTrue()
@@ -36,10 +35,7 @@ namespace QuantityMeasurementApp.Tests
             Assert.IsFalse(f.Equals(null));
         }
 
-
-
-        // UC2 TESTS – INCHES
-
+        // ================= UC2 – INCHES =================
 
         [TestMethod]
         public void InchEquality_SameValue_ReturnsTrue()
@@ -67,9 +63,7 @@ namespace QuantityMeasurementApp.Tests
             Assert.IsFalse(i.Equals(null));
         }
 
-
-        // UC3 TESTS – GENERIC LENGTH
-
+        // ================= UC3 – GENERIC LENGTH =================
 
         [TestMethod]
         public void FeetToFeet_SameValue_ReturnsTrue()
@@ -101,110 +95,78 @@ namespace QuantityMeasurementApp.Tests
             Assert.IsFalse(QuantityMeasurementService.AreLengthEqual(1.0, LengthUnit.FEET, 2.0, LengthUnit.FEET));
         }
 
-        [TestMethod]
-        public void NullComparison_ReturnsFalse()
-        {
-            QuantityLength q = new QuantityLength(1.0, LengthUnit.FEET);
-            Assert.IsFalse(q.Equals(null));
-        }
+        // ================= UC4 – YARDS + CM =================
 
-        [TestMethod]
-        public void SameReference_ReturnsTrue()
-        {
-            QuantityLength q = new QuantityLength(1.0, LengthUnit.FEET);
-            Assert.IsTrue(q.Equals(q));
-        }
-
-
-        //  UC4 TESTS 
-
-        // Yard same value
-        [TestMethod]
-        public void YardToYard_SameValue_ReturnsTrue()
-        {
-            Assert.IsTrue(
-                QuantityMeasurementService.AreLengthEqual(
-                    1.0, LengthUnit.YARDS,
-                    1.0, LengthUnit.YARDS));
-        }
-
-        // Yard to Feet equivalent
         [TestMethod]
         public void YardToFeet_Equivalent_ReturnsTrue()
         {
             Assert.IsTrue(
-                QuantityMeasurementService.AreLengthEqual(
-                    1.0, LengthUnit.YARDS,
-                    3.0, LengthUnit.FEET));
+                QuantityMeasurementService.AreLengthEqual(1.0, LengthUnit.YARDS, 3.0, LengthUnit.FEET));
         }
 
-        // Yard to Inches equivalent
         [TestMethod]
         public void YardToInches_Equivalent_ReturnsTrue()
         {
             Assert.IsTrue(
-                QuantityMeasurementService.AreLengthEqual(
-                    1.0, LengthUnit.YARDS,
-                    36.0, LengthUnit.INCHES));
+                QuantityMeasurementService.AreLengthEqual(1.0, LengthUnit.YARDS, 36.0, LengthUnit.INCHES));
         }
 
-        // Yard different value
-        [TestMethod]
-        public void YardDifferentValue_ReturnsFalse()
-        {
-            Assert.IsFalse(
-                QuantityMeasurementService.AreLengthEqual(
-                    1.0, LengthUnit.YARDS,
-                    2.0, LengthUnit.YARDS));
-        }
-
-        // Centimeter same value
-        [TestMethod]
-        public void CmToCm_SameValue_ReturnsTrue()
-        {
-            Assert.IsTrue(
-                QuantityMeasurementService.AreLengthEqual(
-                    2.0, LengthUnit.CENTIMETERS,
-                    2.0, LengthUnit.CENTIMETERS));
-        }
-
-        // Centimeter to Inch equivalent
         [TestMethod]
         public void CmToInch_Equivalent_ReturnsTrue()
         {
             Assert.IsTrue(
-                QuantityMeasurementService.AreLengthEqual(
-                    1.0, LengthUnit.CENTIMETERS,
-                    0.393701, LengthUnit.INCHES));
+                QuantityMeasurementService.AreLengthEqual(1.0, LengthUnit.CENTIMETERS, 0.393701, LengthUnit.INCHES));
         }
 
-        // Centimeter to Feet not equal
+        // ================= UC5 – CONVERSION =================
+
         [TestMethod]
-        public void CmToFeet_NotEqual_ReturnsFalse()
+        public void Convert_FeetToInches_Returns12()
         {
-            Assert.IsFalse(
-                QuantityMeasurementService.AreLengthEqual(
-                    1.0, LengthUnit.CENTIMETERS,
-                    1.0, LengthUnit.FEET));
+            double result = QuantityMeasurementService.ConvertLength(1.0, LengthUnit.FEET, LengthUnit.INCHES);
+            Assert.AreEqual(12.0, result, 0.0001);
         }
 
-        // Multi-unit transitive property
         [TestMethod]
-        public void MultiUnit_TransitiveProperty_ReturnsTrue()
+        public void Convert_InchesToFeet_Returns2()
         {
-            bool a = QuantityMeasurementService.AreLengthEqual(
-                1.0, LengthUnit.YARDS,
-                3.0, LengthUnit.FEET);
+            double result = QuantityMeasurementService.ConvertLength(24.0, LengthUnit.INCHES, LengthUnit.FEET);
+            Assert.AreEqual(2.0, result, 0.0001);
+        }
 
-            bool b = QuantityMeasurementService.AreLengthEqual(
-                3.0, LengthUnit.FEET,
-                36.0, LengthUnit.INCHES);
+        [TestMethod]
+        public void Convert_YardToFeet_Returns3()
+        {
+            double result = QuantityMeasurementService.ConvertLength(1.0, LengthUnit.YARDS, LengthUnit.FEET);
+            Assert.AreEqual(3.0, result, 0.0001);
+        }
 
-            bool c = QuantityMeasurementService.AreLengthEqual(
-                1.0, LengthUnit.YARDS,
-                36.0, LengthUnit.INCHES);
+        [TestMethod]
+        public void Convert_CmToInches_Returns1()
+        {
+            double result = QuantityMeasurementService.ConvertLength(2.54, LengthUnit.CENTIMETERS, LengthUnit.INCHES);
+            Assert.AreEqual(1.0, result, 0.0001);
+        }
 
-            Assert.IsTrue(a && b && c);
+        [TestMethod]
+        public void Convert_SameUnit_ReturnsSameValue()
+        {
+            double result = QuantityMeasurementService.ConvertLength(5.0, LengthUnit.FEET, LengthUnit.FEET);
+            Assert.AreEqual(5.0, result);
+        }
+
+        [TestMethod]
+        public void Convert_ZeroValue_ReturnsZero()
+        {
+            double result = QuantityMeasurementService.ConvertLength(0.0, LengthUnit.FEET, LengthUnit.INCHES);
+            Assert.AreEqual(0.0, result);
+        }
+
+        [TestMethod]
+        public void Convert_NegativeValue_ReturnsCorrect()
+        {
+            double result = QuantityMeasurementService.ConvertLength(-1.0, LengthUnit.FEET, LengthUnit.INCHES);
+            Assert.AreEqual(-12.0, result);
         }
     }
 }

@@ -4,8 +4,8 @@ namespace QuantityMeasurementApp.Services
 {
     public class QuantityMeasurementService
     {
-        // Method to check equality of two feet objects
-        
+        // ---------- UC1 ----------
+        // Method to check equality of two feet values
         public static bool AreFeetEqual(double v1, double v2)
         {
             Feet f1 = new Feet(v1);
@@ -14,7 +14,8 @@ namespace QuantityMeasurementApp.Services
             return f1.Equals(f2);
         }
 
-         // Static method to compare two inches values
+        // ---------- UC2 ----------
+        // Method to check equality of two inches values
         public static bool AreInchesEqual(double v1, double v2)
         {
             Inches i1 = new Inches(v1);
@@ -23,8 +24,8 @@ namespace QuantityMeasurementApp.Services
             return i1.Equals(i2);
         }
 
-     
-        // Generic equality check
+        // ---------- UC3 & UC4 ----------
+        // Generic equality check for any length unit
         public static bool AreLengthEqual(double v1, LengthUnit u1, double v2, LengthUnit u2)
         {
             QuantityLength q1 = new QuantityLength(v1, u1);
@@ -32,5 +33,12 @@ namespace QuantityMeasurementApp.Services
 
             return q1.Equals(q2);
         }
+
+        // ---------- UC5 ----------
+        // Convert value from one unit to another
+        public static double ConvertLength(double value, LengthUnit from, LengthUnit to)
+        {
+            return QuantityLength.Convert(value, from, to);
+        }
     }
-    }
+}
