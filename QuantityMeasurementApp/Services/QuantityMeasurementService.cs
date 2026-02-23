@@ -40,5 +40,14 @@ namespace QuantityMeasurementApp.Services
         {
             return QuantityLength.Convert(value, from, to);
         }
+
+        // UC6 ADDITION SERVICE METHOD
+        public static QuantityLength AddLengths(double v1, LengthUnit u1, double v2, LengthUnit u2)
+        {
+            QuantityLength q1 = new QuantityLength(v1, u1);
+            QuantityLength q2 = new QuantityLength(v2, u2);
+
+            return QuantityLength.Add(q1,q2);
+        }
     }
 }

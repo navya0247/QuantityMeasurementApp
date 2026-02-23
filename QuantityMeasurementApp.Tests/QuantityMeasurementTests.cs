@@ -121,28 +121,28 @@ namespace QuantityMeasurementApp.Tests
         // ================= UC5 – CONVERSION =================
 
         [TestMethod]
-        public void Convert_FeetToInches_Returns12()
+        public void Convert_FeetToInches_Returns()
         {
             double result = QuantityMeasurementService.ConvertLength(1.0, LengthUnit.FEET, LengthUnit.INCHES);
             Assert.AreEqual(12.0, result, 0.0001);
         }
 
         [TestMethod]
-        public void Convert_InchesToFeet_Returns2()
+        public void Convert_InchesToFeet_Returns()
         {
             double result = QuantityMeasurementService.ConvertLength(24.0, LengthUnit.INCHES, LengthUnit.FEET);
             Assert.AreEqual(2.0, result, 0.0001);
         }
 
         [TestMethod]
-        public void Convert_YardToFeet_Returns3()
+        public void Convert_YardToFeet_Returns()
         {
             double result = QuantityMeasurementService.ConvertLength(1.0, LengthUnit.YARDS, LengthUnit.FEET);
             Assert.AreEqual(3.0, result, 0.0001);
         }
 
         [TestMethod]
-        public void Convert_CmToInches_Returns1()
+        public void Convert_CmToInches_Returns()
         {
             double result = QuantityMeasurementService.ConvertLength(2.54, LengthUnit.CENTIMETERS, LengthUnit.INCHES);
             Assert.AreEqual(1.0, result, 0.0001);
@@ -152,7 +152,7 @@ namespace QuantityMeasurementApp.Tests
         public void Convert_SameUnit_ReturnsSameValue()
         {
             double result = QuantityMeasurementService.ConvertLength(5.0, LengthUnit.FEET, LengthUnit.FEET);
-            Assert.AreEqual(5.0, result);
+           Assert.AreEqual(5.0, result, 0.0001);
         }
 
         [TestMethod]
@@ -167,6 +167,74 @@ namespace QuantityMeasurementApp.Tests
         {
             double result = QuantityMeasurementService.ConvertLength(-1.0, LengthUnit.FEET, LengthUnit.INCHES);
             Assert.AreEqual(-12.0, result);
+        }
+
+        // ---------------- UC6 ADDITION TESTS ----------------
+
+        // Same unit addition
+        [TestMethod]
+        public void Add_FeetPlusFeet_ReturnsFeet()
+        {
+            var result = QuantityMeasurementService.AddLengths(
+                1.0, LengthUnit.FEET,
+                2.0, LengthUnit.FEET);
+
+            Assert.AreEqual(3.0, result.Value, 0.0001);
+        }
+
+        // Cross unit addition
+        [TestMethod]
+        public void Add_FeetPlusInches_ReturnsFeet()
+        {
+            var result = QuantityMeasurementService.AddLengths(
+                1.0, LengthUnit.FEET,
+                12.0, LengthUnit.INCHES);
+
+            Assert.AreEqual(2.0, result.Value, 0.0001);
+        }
+
+        // Reverse order
+        [TestMethod]
+        public void Add_InchPlusFeet_ReturnsInches()
+        {
+            var result = QuantityMeasurementService.AddLengths(
+                12.0, LengthUnit.INCHES,
+                1.0, LengthUnit.FEET);
+
+            Assert.AreEqual(24.0, result.Value, 0.0001);
+        }
+
+        // Yard + Feet
+        [TestMethod]
+        public void Add_YardPlusFeet_ReturnsYards()
+        {
+            var result = QuantityMeasurementService.AddLengths(
+                1.0, LengthUnit.YARDS,
+                3.0, LengthUnit.FEET);
+
+            Assert.AreEqual(2.0, result.Value, 0.0001);
+        }
+
+        // With zero
+        [TestMethod]
+        public void Add_WithZero_ReturnsSameValue()
+        {
+            var result = QuantityMeasurementService.AddLengths(
+                5.0, LengthUnit.FEET,
+                0.0, LengthUnit.INCHES);
+
+            Assert.AreEqual(5.0, result.Value, 0.0001);
+        }
+
+        // Negative values
+        [TestMethod]
+        public void Add_NegativeValues_ReturnsCorrect()
+        {
+            var result = QuantityMeasurementService.AddLengths(
+                5.0, LengthUnit.FEET,
+                -2.0, LengthUnit.FEET);
+
+            Assert.AreEqual(3.0, result.Value, 0.0001);
         }
     }
 }

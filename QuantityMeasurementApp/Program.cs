@@ -10,14 +10,15 @@ namespace QuantityMeasurementApp
         {
             int choice;
 
-            do
+        do
             {
-                Console.WriteLine("\n--- Quantity Measurement Menu ---");
-                Console.WriteLine("1. Check Feet Equality");
-                Console.WriteLine("2. Check Inches Equality");
-                Console.WriteLine("3. Check Length Equality (Generic)");
-                Console.WriteLine("4. Convert Length Units ");
-                Console.WriteLine("5. Exit");
+                Console.WriteLine("\n========= Quantity Measurement Menu =========");
+                Console.WriteLine("1. Check Feet Equality (UC1)");
+                Console.WriteLine("2. Check Inches Equality (UC2)");
+                Console.WriteLine("3. Check Generic Length Equality (UC3/UC4)");
+                Console.WriteLine("4. Convert Length Units (UC5)");
+                Console.WriteLine("5. Add Two Lengths (UC6)");
+                Console.WriteLine("6. Exit");
                 Console.Write("Enter choice: ");
 
                 choice = Convert.ToInt32(Console.ReadLine());
@@ -55,53 +56,62 @@ namespace QuantityMeasurementApp
                             Console.Write("Enter first value: ");
                             double v1 = Convert.ToDouble(Console.ReadLine());
 
-                            Console.WriteLine("\nSelect Unit:");
-                            Console.WriteLine("1 = Feet");
-                            Console.WriteLine("2 = Inches");
-                            Console.WriteLine("3 = Yards");
-                            Console.WriteLine("4 = Centimeters");
+                            Console.WriteLine("Select Unit:");
+                            DisplayUnits();
                             LengthUnit u1 = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
 
-                            Console.Write("\nEnter second value: ");
+                            Console.Write("Enter second value: ");
                             double v2 = Convert.ToDouble(Console.ReadLine());
 
-                            Console.WriteLine("\nSelect Unit:");
-                            Console.WriteLine("1 = Feet");
-                            Console.WriteLine("2 = Inches");
-                            Console.WriteLine("3 = Yards");
-                            Console.WriteLine("4 = Centimeters");
+                            Console.WriteLine("Select Unit:");
+                            DisplayUnits();
                             LengthUnit u2 = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
 
-                            Console.WriteLine("\nEqual: " +
+                            Console.WriteLine("Equal: " +
                                 QuantityMeasurementService.AreLengthEqual(v1, u1, v2, u2));
                             break;
 
-                        // ---------- UC5  ----------
+                        // ---------- UC5 ----------
                         case 4:
                             Console.Write("Enter value to convert: ");
                             double value = Convert.ToDouble(Console.ReadLine());
 
-                            Console.WriteLine("\nConvert FROM:");
-                            Console.WriteLine("1 = Feet");
-                            Console.WriteLine("2 = Inches");
-                            Console.WriteLine("3 = Yards");
-                            Console.WriteLine("4 = Centimeters");
+                            Console.WriteLine("From Unit:");
+                            DisplayUnits();
                             LengthUnit from = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
 
-                            Console.WriteLine("\nConvert TO:");
-                            Console.WriteLine("1 = Feet");
-                            Console.WriteLine("2 = Inches");
-                            Console.WriteLine("3 = Yards");
-                            Console.WriteLine("4 = Centimeters");
+                            Console.WriteLine("To Unit:");
+                            DisplayUnits();
                             LengthUnit to = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
 
                             double result = QuantityMeasurementService.ConvertLength(value, from, to);
 
-                            Console.WriteLine($"\nConverted Value: {result}");
+                            Console.WriteLine("Converted Value: " + result);
                             break;
 
+                        // ---------- UC6 ----------
                         case 5:
-                            Console.WriteLine("Exiting...");
+                            Console.Write("Enter first value: ");
+                            double a1 = Convert.ToDouble(Console.ReadLine());
+
+                            Console.WriteLine("First Value Unit:");
+                            DisplayUnits();
+                            LengthUnit ua1 = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
+
+                            Console.Write("Enter second value: ");
+                            double a2 = Convert.ToDouble(Console.ReadLine());
+
+                            Console.WriteLine("Second Value Unit:");
+                            DisplayUnits();
+                            LengthUnit ua2 = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
+
+                            var sum = QuantityMeasurementService.AddLengths(a1, ua1, a2, ua2);
+
+                            Console.WriteLine($"Result: {sum.Value} {sum.Unit}");
+                            break;
+
+                        case 6:
+                            Console.WriteLine("Exiting application...");
                             break;
 
                         default:
@@ -114,7 +124,17 @@ namespace QuantityMeasurementApp
                     Console.WriteLine("Invalid input!");
                 }
 
-            } while (choice != 5);
+            } while (choice != 6);
+        }
+
+        // Helper method to show units menu
+        private static void DisplayUnits()
+        {
+            Console.WriteLine("1 = FEET");
+            Console.WriteLine("2 = INCHES");
+            Console.WriteLine("3 = YARDS");
+            Console.WriteLine("4 = CENTIMETERS");
         }
     }
+
 }
