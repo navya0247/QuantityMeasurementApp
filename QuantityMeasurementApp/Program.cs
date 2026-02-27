@@ -10,7 +10,7 @@ namespace QuantityMeasurementApp
         {
             int choice;
 
-        do
+            do
             {
                 Console.WriteLine("\n========= Quantity Measurement Menu =========");
                 Console.WriteLine("1. Check Feet Equality (UC1)");
@@ -18,7 +18,9 @@ namespace QuantityMeasurementApp
                 Console.WriteLine("3. Check Generic Length Equality (UC3/UC4)");
                 Console.WriteLine("4. Convert Length Units (UC5)");
                 Console.WriteLine("5. Add Two Lengths (UC6)");
-                Console.WriteLine("6. Exit");
+                Console.WriteLine("6. Add Two Lengths With Target Unit (UC7)");
+                Console.WriteLine("7. Exit");
+
                 Console.Write("Enter choice: ");
 
                 choice = Convert.ToInt32(Console.ReadLine());
@@ -110,7 +112,34 @@ namespace QuantityMeasurementApp
                             Console.WriteLine($"Result: {sum.Value} {sum.Unit}");
                             break;
 
+
+                        // ---------- UC7 ----------
                         case 6:
+                            Console.Write("Enter first value: ");
+                            double b1 = Convert.ToDouble(Console.ReadLine());
+
+                            Console.WriteLine("First Value Unit:");
+                            DisplayUnits();
+                            LengthUnit ub1 = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
+
+                            Console.Write("Enter second value: ");
+                            double b2 = Convert.ToDouble(Console.ReadLine());
+
+                            Console.WriteLine("Second Value Unit:");
+                            DisplayUnits();
+                            LengthUnit ub2 = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
+
+                            Console.WriteLine("Target Unit:");
+                            DisplayUnits();
+                            LengthUnit target = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
+
+                            var resultUC7 = QuantityMeasurementService.AddLengths(
+                                b1, ub1, b2, ub2, target);
+
+                            Console.WriteLine($"Result: {resultUC7.Value} {resultUC7.Unit}");
+                            break;
+
+                        case 7:
                             Console.WriteLine("Exiting application...");
                             break;
 

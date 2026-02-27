@@ -152,7 +152,7 @@ namespace QuantityMeasurementApp.Tests
         public void Convert_SameUnit_ReturnsSameValue()
         {
             double result = QuantityMeasurementService.ConvertLength(5.0, LengthUnit.FEET, LengthUnit.FEET);
-           Assert.AreEqual(5.0, result, 0.0001);
+            Assert.AreEqual(5.0, result, 0.0001);
         }
 
         [TestMethod]
@@ -236,5 +236,128 @@ namespace QuantityMeasurementApp.Tests
 
             Assert.AreEqual(3.0, result.Value, 0.0001);
         }
+
+
+
+        // ================= UC7 – ADDITION WITH TARGET UNIT =================
+
+        // Explicit target = FEET
+        [TestMethod]
+        public void Add_ExplicitTargetUnit_Feet()
+        {
+            var result = QuantityLength.Add(
+                new QuantityLength(1.0, LengthUnit.FEET),
+                new QuantityLength(12.0, LengthUnit.INCHES),
+                LengthUnit.FEET);
+
+            Assert.AreEqual(2.0, result.Value, 0.0001);
+            Assert.AreEqual(LengthUnit.FEET, result.Unit);
+        }
+
+        // Explicit target = INCHES
+        [TestMethod]
+        public void Add_ExplicitTargetUnit_Inches()
+        {
+            var result = QuantityLength.Add(
+                new QuantityLength(1.0, LengthUnit.FEET),
+                new QuantityLength(12.0, LengthUnit.INCHES),
+                LengthUnit.INCHES);
+
+            Assert.AreEqual(24.0, result.Value, 0.0001);
+            Assert.AreEqual(LengthUnit.INCHES, result.Unit);
+        }
+
+        // Explicit target = YARDS
+        [TestMethod]
+        public void Add_ExplicitTargetUnit_Yards()
+        {
+            var result = QuantityLength.Add(
+                new QuantityLength(1.0, LengthUnit.FEET),
+                new QuantityLength(12.0, LengthUnit.INCHES),
+                LengthUnit.YARDS);
+
+            Assert.AreEqual(0.6667, result.Value, 0.0001);
+            Assert.AreEqual(LengthUnit.YARDS, result.Unit);
+        }
+
+        // Explicit target = CENTIMETERS
+        [TestMethod]
+        public void Add_ExplicitTargetUnit_Centimeters()
+        {
+            var result = QuantityLength.Add(
+                new QuantityLength(1.0, LengthUnit.INCHES),
+                new QuantityLength(1.0, LengthUnit.INCHES),
+                LengthUnit.CENTIMETERS);
+
+            Assert.AreEqual(5.08, result.Value, 0.0001);
+            Assert.AreEqual(LengthUnit.CENTIMETERS, result.Unit);
+        }
+
+        // Commutativity test
+        [TestMethod]
+        public void Add_ExplicitTargetUnit_Commutative()
+        {
+            var result1 = QuantityLength.Add(
+                new QuantityLength(1.0, LengthUnit.FEET),
+                new QuantityLength(12.0, LengthUnit.INCHES),
+                LengthUnit.YARDS);
+
+            var result2 = QuantityLength.Add(
+                new QuantityLength(12.0, LengthUnit.INCHES),
+                new QuantityLength(1.0, LengthUnit.FEET),
+                LengthUnit.YARDS);
+
+            Assert.AreEqual(result1.Value, result2.Value, 0.0001);
+        }
+
+        // With zero
+        [TestMethod]
+        public void Add_ExplicitTargetUnit_WithZero()
+        {
+            var result = QuantityLength.Add(
+                new QuantityLength(5.0, LengthUnit.FEET),
+                new QuantityLength(0.0, LengthUnit.INCHES),
+                LengthUnit.YARDS);
+
+            Assert.AreEqual(1.6667, result.Value, 0.0001);
+        }
+
+        // Negative values
+        [TestMethod]
+        public void Add_ExplicitTargetUnit_NegativeValues()
+        {
+            var result = QuantityLength.Add(
+                new QuantityLength(5.0, LengthUnit.FEET),
+                new QuantityLength(-2.0, LengthUnit.FEET),
+                LengthUnit.INCHES);
+
+            Assert.AreEqual(36.0, result.Value, 0.0001);
+        }
+
+        // Large to small scale
+        [TestMethod]
+        public void Add_ExplicitTargetUnit_LargeToSmall()
+        {
+            var result = QuantityLength.Add(
+                new QuantityLength(1000.0, LengthUnit.FEET),
+                new QuantityLength(500.0, LengthUnit.FEET),
+                LengthUnit.INCHES);
+
+            Assert.AreEqual(18000.0, result.Value, 0.0001);
+        }
+
+        // Small to large scale
+        [TestMethod]
+        public void Add_ExplicitTargetUnit_SmallToLarge()
+        {
+            var result = QuantityLength.Add(
+                new QuantityLength(12.0, LengthUnit.INCHES),
+                new QuantityLength(12.0, LengthUnit.INCHES),
+                LengthUnit.YARDS);
+
+            Assert.AreEqual(0.6667, result.Value, 0.0001);
+        }
+
+      
+        }
     }
-}

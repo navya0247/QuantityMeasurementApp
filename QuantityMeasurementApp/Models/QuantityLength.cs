@@ -7,7 +7,6 @@ namespace QuantityMeasurementApp.Models
         private readonly double value;
         private readonly LengthUnit unit;
 
-
         // Public read-only properties
         public double Value => value;
         public LengthUnit Unit => unit;
@@ -25,7 +24,6 @@ namespace QuantityMeasurementApp.Models
         }
 
         // ================= UC5 =================
-        // Generic Conversion Method
         public static double Convert(double value, LengthUnit from, LengthUnit to)
         {
             if (double.IsNaN(value) || double.IsInfinity(value))
@@ -36,26 +34,37 @@ namespace QuantityMeasurementApp.Models
         }
 
         // ================= UC6 =================
-        // ADDITION METHOD
         public static QuantityLength Add(QuantityLength a, QuantityLength b)
+        {
+            return Add(a, b, a.unit); // Reuse UC7 (DRY principle)
+        }
+
+        // Overloaded addition (raw values)
+        public static QuantityLength Add(double v1, LengthUnit u1,
+                                         double v2, LengthUnit u2)
+        {
+            return Add(new QuantityLength(v1, u1),
+                       new QuantityLength(v2, u2));
+        }
+
+        // ================= UC7 =================
+        // ADDITION WITH EXPLICIT TARGET UNIT
+        public static QuantityLength Add(
+            QuantityLength a,
+            QuantityLength b,
+            LengthUnit targetUnit)
         {
             if (a == null || b == null)
                 throw new ArgumentException("Quantity cannot be null");
 
-            // Convert both to feet
+            if (!Enum.IsDefined(typeof(LengthUnit), targetUnit))
+                throw new ArgumentException("Invalid target unit");
+
             double sumFeet = a.ConvertToFeet() + b.ConvertToFeet();
 
-            // Convert result back to FIRST operand unit
-            double resultValue = sumFeet / a.unit.ToFeetFactor();
+            double resultValue = sumFeet / targetUnit.ToFeetFactor();
 
-            return new QuantityLength(resultValue, a.unit);
-        }
-
-        // Overloaded addition 
-        public static QuantityLength Add(double v1, LengthUnit u1, double v2, LengthUnit u2)
-        {
-            return Add(new QuantityLength(v1, u1),
-                       new QuantityLength(v2, u2));
+            return new QuantityLength(resultValue, targetUnit);
         }
 
         // ================= EQUALITY =================
@@ -75,5 +84,4 @@ namespace QuantityMeasurementApp.Models
             return ConvertToFeet().GetHashCode();
         }
     }
-
 }
