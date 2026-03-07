@@ -19,7 +19,8 @@ namespace QuantityMeasurementApp
                 Console.WriteLine("4. Convert Length Units (UC5)");
                 Console.WriteLine("5. Add Two Lengths (UC6)");
                 Console.WriteLine("6. Add Two Lengths With Target Unit (UC7)");
-                Console.WriteLine("7. Exit");
+                Console.WriteLine("7. Standalone LengthUnit Conversion Operations (UC8)");
+                Console.WriteLine("8. Exit");
 
                 Console.Write("Enter choice: ");
 
@@ -139,7 +140,34 @@ namespace QuantityMeasurementApp
                             Console.WriteLine($"Result: {resultUC7.Value} {resultUC7.Unit}");
                             break;
 
+
+                        // ---------- UC8 ----------
                         case 7:
+
+                            Console.WriteLine("\nUC8: Standalone LengthUnit Conversion Operations");
+
+                            Console.Write("Enter value: ");
+                            double inputValue = Convert.ToDouble(Console.ReadLine());
+
+                            Console.WriteLine("Select Unit:");
+                            DisplayUnits();
+                            LengthUnit selectedUnit = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
+
+                            // Convert to base unit (FEET)
+                            double baseValue = selectedUnit.ConvertToBaseUnit(inputValue);
+
+                            Console.WriteLine($"Converted to base unit (FEET): {baseValue}");
+
+                            // Convert back from base unit
+                            double reconverted = selectedUnit.ConvertFromBaseUnit(baseValue);
+
+                            Console.WriteLine($"Converted back to {selectedUnit}: {reconverted}");
+
+                            Console.WriteLine("UC8 Demonstration Complete: LengthUnit handles unit conversion.");
+
+                            break;
+
+                        case 8:
                             Console.WriteLine("Exiting application...");
                             break;
 
@@ -153,7 +181,7 @@ namespace QuantityMeasurementApp
                     Console.WriteLine("Invalid input!");
                 }
 
-            } while (choice != 6);
+            } while (choice != 8);
         }
 
         // Helper method to show units menu

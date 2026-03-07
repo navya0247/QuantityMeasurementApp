@@ -7,7 +7,7 @@ namespace QuantityMeasurementApp.Tests
     [TestClass]
     public class QuantityMeasurementTests
     {
-        // ================= UC1 – FEET =================
+        //  UC1 – FEET 
 
         [TestMethod]
         public void FeetEquality_SameValue_ReturnsTrue()
@@ -35,7 +35,7 @@ namespace QuantityMeasurementApp.Tests
             Assert.IsFalse(f.Equals(null));
         }
 
-        // ================= UC2 – INCHES =================
+        //  UC2 – INCHES 
 
         [TestMethod]
         public void InchEquality_SameValue_ReturnsTrue()
@@ -63,7 +63,7 @@ namespace QuantityMeasurementApp.Tests
             Assert.IsFalse(i.Equals(null));
         }
 
-        // ================= UC3 – GENERIC LENGTH =================
+        //  UC3 – GENERIC LENGTH 
 
         [TestMethod]
         public void FeetToFeet_SameValue_ReturnsTrue()
@@ -95,7 +95,7 @@ namespace QuantityMeasurementApp.Tests
             Assert.IsFalse(QuantityMeasurementService.AreLengthEqual(1.0, LengthUnit.FEET, 2.0, LengthUnit.FEET));
         }
 
-        // ================= UC4 – YARDS + CM =================
+        //  UC4 – YARDS + CM 
 
         [TestMethod]
         public void YardToFeet_Equivalent_ReturnsTrue()
@@ -118,7 +118,7 @@ namespace QuantityMeasurementApp.Tests
                 QuantityMeasurementService.AreLengthEqual(1.0, LengthUnit.CENTIMETERS, 0.393701, LengthUnit.INCHES));
         }
 
-        // ================= UC5 – CONVERSION =================
+        //  UC5 – CONVERSION 
 
         [TestMethod]
         public void Convert_FeetToInches_Returns()
@@ -239,7 +239,7 @@ namespace QuantityMeasurementApp.Tests
 
 
 
-        // ================= UC7 – ADDITION WITH TARGET UNIT =================
+        //  UC7 – ADDITION WITH TARGET UNIT 
 
         // Explicit target = FEET
         [TestMethod]
@@ -358,6 +358,125 @@ namespace QuantityMeasurementApp.Tests
             Assert.AreEqual(0.6667, result.Value, 0.0001);
         }
 
-      
+        // UC8 – STANDALONE LENGTHUNIT 
+
+        // Test length unit enum 
+        [TestMethod]
+        public void LengthUnit_FeetConstantExists()
+        {
+            Assert.AreEqual(LengthUnit.FEET, LengthUnit.FEET);
         }
+
+        [TestMethod]
+        public void LengthUnit_InchesConstantExists()
+        {
+            Assert.AreEqual (LengthUnit.INCHES, LengthUnit.INCHES);
+        }
+
+        [TestMethod]
+        public void LengthUnit_YardsConstantExists()
+        {
+            Assert.AreEqual(LengthUnit.YARDS, LengthUnit.YARDS);
+        }
+
+        [TestMethod]
+        public void LengthUnit_CentimetersConstantExists()
+        {
+            Assert.AreEqual(LengthUnit.CENTIMETERS, LengthUnit.CENTIMETERS);
+        }
+
+
+        // -------- ConvertToBaseUnit Tests --------
+
+        [TestMethod]
+        public void ConvertToBaseUnit_FeetToFeet()
+        {
+            double result = LengthUnit.FEET.ConvertToBaseUnit(5.0);
+            Assert.AreEqual(5.0, result, 0.0001);
+        }
+
+        [TestMethod]
+        public void ConvertToBaseUnit_InchesToFeet()
+        {
+            double result = LengthUnit.INCHES.ConvertToBaseUnit(12.0);
+            Assert.AreEqual(1.0, result, 0.0001);
+        }
+
+        [TestMethod]
+        public void ConvertToBaseUnit_YardsToFeet()
+        {
+            double result = LengthUnit.YARDS.ConvertToBaseUnit(1.0);
+            Assert.AreEqual(3.0, result, 0.0001);
+        }
+
+        [TestMethod]
+        public void ConvertToBaseUnit_CentimetersToFeet()
+        {
+            double result = LengthUnit.CENTIMETERS.ConvertToBaseUnit(30.48);
+            Assert.AreEqual(1.0, result, 0.0001);
+        }
+
+
+        // -------- ConvertFromBaseUnit Tests --------
+
+        [TestMethod]
+        public void ConvertFromBaseUnit_FeetToFeet()
+        {
+            double result = LengthUnit.FEET.ConvertFromBaseUnit(2.0);
+            Assert.AreEqual(2.0, result, 0.0001);
+        }
+
+        [TestMethod]
+        public void ConvertFromBaseUnit_FeetToInches()
+        {
+            double result = LengthUnit.INCHES.ConvertFromBaseUnit(1.0);
+            Assert.AreEqual(12.0, result, 0.0001);
+        }
+
+        [TestMethod]
+        public void ConvertFromBaseUnit_FeetToYards()
+        {
+            double result = LengthUnit.YARDS.ConvertFromBaseUnit(3.0);
+            Assert.AreEqual(1.0, result, 0.0001);
+        }
+
+        [TestMethod]
+        public void ConvertFromBaseUnit_FeetToCentimeters()
+        {
+            double result = LengthUnit.CENTIMETERS.ConvertFromBaseUnit(1.0);
+            Assert.AreEqual(30.48, result, 0.01);
+        }
+
+
+        // -------- Refactored QuantityLength Tests --------
+
+        [TestMethod]
+        public void QuantityLengthRefactored_Equality()
+        {
+            QuantityLength q1 = new QuantityLength(1.0, LengthUnit.FEET);
+            QuantityLength q2 = new QuantityLength(12.0, LengthUnit.INCHES);
+
+            Assert.IsTrue(q1.Equals(q2));
+        }
+
+        [TestMethod]
+        public void QuantityLengthRefactored_Convert()
+        {
+            double result = QuantityLength.Convert(1.0, LengthUnit.FEET, LengthUnit.INCHES);
+            Assert.AreEqual(12.0, result, 0.0001);
+        }
+
+        [TestMethod]
+        public void QuantityLengthRefactored_Addition()
+        {
+            var result = QuantityLength.Add(
+                new QuantityLength(1.0, LengthUnit.FEET),
+                new QuantityLength(12.0, LengthUnit.INCHES),
+                LengthUnit.FEET);
+
+            Assert.AreEqual(2.0, result.Value, 0.0001);
+        }
+
+
     }
+}
