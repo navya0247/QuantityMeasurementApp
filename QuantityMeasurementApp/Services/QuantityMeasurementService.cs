@@ -62,5 +62,32 @@ namespace QuantityMeasurementApp.Services
 
             return QuantityLength.Add(q1, q2, targetUnit);
         }
+
+
+        // ---------- UC9 ----------
+        // Weight Equality
+        public static bool AreWeightEqual(double v1, WeightUnit u1, double v2, WeightUnit u2)
+        {
+            QuantityWeight w1 = new QuantityWeight(v1, u1);
+            QuantityWeight w2 = new QuantityWeight(v2, u2);
+
+            return w1.Equals(w2);
+        }
+
+        // Weight Conversion
+        public static QuantityWeight ConvertWeight(double value, WeightUnit from, WeightUnit to)
+        {
+            QuantityWeight w = new QuantityWeight(value, from);
+            return w.ConvertTo(to);
+        }
+
+        // Weight Addition
+        public static QuantityWeight AddWeights(double v1, WeightUnit u1, double v2, WeightUnit u2)
+        {
+            QuantityWeight w1 = new QuantityWeight(v1, u1);
+            QuantityWeight w2 = new QuantityWeight(v2, u2);
+
+            return QuantityWeight.Add(w1, w2);
+        }
     }
 }

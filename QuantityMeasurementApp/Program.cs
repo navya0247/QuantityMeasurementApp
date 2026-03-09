@@ -20,7 +20,8 @@ namespace QuantityMeasurementApp
                 Console.WriteLine("5. Add Two Lengths (UC6)");
                 Console.WriteLine("6. Add Two Lengths With Target Unit (UC7)");
                 Console.WriteLine("7. Standalone LengthUnit Conversion Operations (UC8)");
-                Console.WriteLine("8. Exit");
+                Console.WriteLine("8. Weight Measurement Operations (UC9)");
+                Console.WriteLine("9. Exit");
 
                 Console.Write("Enter choice: ");
 
@@ -167,7 +168,31 @@ namespace QuantityMeasurementApp
 
                             break;
 
+                          
+                          // ------------UC9--------------
                         case 8:
+
+                            Console.Write("Enter first weight value: ");
+                            double w1 = Convert.ToDouble(Console.ReadLine());
+
+                            Console.WriteLine("Select Unit:");
+                            DisplayWeightUnits();
+                            WeightUnit wu1 = (WeightUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
+
+                            Console.Write("Enter second weight value: ");
+                            double w2 = Convert.ToDouble(Console.ReadLine());
+
+                            Console.WriteLine("Select Unit:");
+                            DisplayWeightUnits();
+                            WeightUnit wu2 = (WeightUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
+
+                            var weightSum = QuantityMeasurementService.AddWeights(w1, wu1, w2, wu2);
+
+                            Console.WriteLine($"Result: {weightSum.Value} {weightSum.Unit}");
+
+                            break;
+
+                        case 9:
                             Console.WriteLine("Exiting application...");
                             break;
 
@@ -181,7 +206,7 @@ namespace QuantityMeasurementApp
                     Console.WriteLine("Invalid input!");
                 }
 
-            } while (choice != 8);
+            } while (choice != 9);
         }
 
         // Helper method to show units menu
@@ -191,6 +216,15 @@ namespace QuantityMeasurementApp
             Console.WriteLine("2 = INCHES");
             Console.WriteLine("3 = YARDS");
             Console.WriteLine("4 = CENTIMETERS");
+        }
+        
+        // helper method
+
+        private static void DisplayWeightUnits()
+        {
+            Console.WriteLine("1 = KILOGRAM");
+            Console.WriteLine("2 = GRAM");
+            Console.WriteLine("3 = POUND");
         }
     }
 
