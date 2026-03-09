@@ -2,10 +2,17 @@ using QuantityMeasurementApp.Models;
 
 namespace QuantityMeasurementApp.Services
 {
+    /// <summary>
+    /// UC10:
+    /// Service class updated to use Generic Quantity<U> instead of
+    /// QuantityLength and QuantityWeight classes.
+    /// </summary>
     public class QuantityMeasurementService
     {
         // ---------- UC1 ----------
-        // Method to check equality of two feet values
+        /// <summary>
+        /// Check equality of two feet values
+        /// </summary>
         public static bool AreFeetEqual(double v1, double v2)
         {
             Feet f1 = new Feet(v1);
@@ -15,7 +22,9 @@ namespace QuantityMeasurementApp.Services
         }
 
         // ---------- UC2 ----------
-        // Method to check equality of two inches values
+        /// <summary>
+        /// Check equality of two inches values
+        /// </summary>
         public static bool AreInchesEqual(double v1, double v2)
         {
             Inches i1 = new Inches(v1);
@@ -25,69 +34,90 @@ namespace QuantityMeasurementApp.Services
         }
 
         // ---------- UC3 & UC4 ----------
-        // Generic equality check for any length unit
+        /// <summary>
+        /// Generic equality check using Quantity<U>
+        /// </summary>
         public static bool AreLengthEqual(double v1, LengthUnit u1, double v2, LengthUnit u2)
         {
-            QuantityLength q1 = new QuantityLength(v1, u1);
-            QuantityLength q2 = new QuantityLength(v2, u2);
+            var q1 = new Quantity<LengthUnit>(v1, u1);
+            var q2 = new Quantity<LengthUnit>(v2, u2);
 
             return q1.Equals(q2);
         }
 
         // ---------- UC5 ----------
-        // Convert value from one unit to another
+        /// <summary>
+        /// Convert length units using generic Quantity
+        /// </summary>
         public static double ConvertLength(double value, LengthUnit from, LengthUnit to)
         {
-            return QuantityLength.Convert(value, from, to);
+            var quantity = new Quantity<LengthUnit>(value, from);
+
+            return quantity.ConvertTo(to).Value;
         }
 
-        // UC6 ADDITION SERVICE METHOD
-        public static QuantityLength AddLengths(double v1, LengthUnit u1, double v2, LengthUnit u2)
+        // ---------- UC6 ----------
+        /// <summary>
+        /// Add two lengths
+        /// </summary>
+        public static Quantity<LengthUnit> AddLengths(
+            double v1, LengthUnit u1,
+            double v2, LengthUnit u2)
         {
-            QuantityLength q1 = new QuantityLength(v1, u1);
-            QuantityLength q2 = new QuantityLength(v2, u2);
+            var q1 = new Quantity<LengthUnit>(v1, u1);
+            var q2 = new Quantity<LengthUnit>(v2, u2);
 
-            return QuantityLength.Add(q1, q2);
+            return q1.Add(q2, u1);
         }
 
         // ---------- UC7 ----------
-        // Add Two Lengths With Explicit Target Unit
-        public static QuantityLength AddLengths(
+        /// <summary>
+        /// Add two lengths with target unit
+        /// </summary>
+        public static Quantity<LengthUnit> AddLengths(
             double v1, LengthUnit u1,
             double v2, LengthUnit u2,
             LengthUnit targetUnit)
         {
-            QuantityLength q1 = new QuantityLength(v1, u1);
-            QuantityLength q2 = new QuantityLength(v2, u2);
+            var q1 = new Quantity<LengthUnit>(v1, u1);
+            var q2 = new Quantity<LengthUnit>(v2, u2);
 
-            return QuantityLength.Add(q1, q2, targetUnit);
+            return q1.Add(q2, targetUnit);
         }
 
-
         // ---------- UC9 ----------
-        // Weight Equality
+        /// <summary>
+        /// Weight equality using generic Quantity
+        /// </summary>
         public static bool AreWeightEqual(double v1, WeightUnit u1, double v2, WeightUnit u2)
         {
-            QuantityWeight w1 = new QuantityWeight(v1, u1);
-            QuantityWeight w2 = new QuantityWeight(v2, u2);
+            var w1 = new Quantity<WeightUnit>(v1, u1);
+            var w2 = new Quantity<WeightUnit>(v2, u2);
 
             return w1.Equals(w2);
         }
 
-        // Weight Conversion
-        public static QuantityWeight ConvertWeight(double value, WeightUnit from, WeightUnit to)
+        /// <summary>
+        /// Convert weight units
+        /// </summary>
+        public static Quantity<WeightUnit> ConvertWeight(double value, WeightUnit from, WeightUnit to)
         {
-            QuantityWeight w = new QuantityWeight(value, from);
-            return w.ConvertTo(to);
+            var weight = new Quantity<WeightUnit>(value, from);
+
+            return weight.ConvertTo(to);
         }
 
-        // Weight Addition
-        public static QuantityWeight AddWeights(double v1, WeightUnit u1, double v2, WeightUnit u2)
+        /// <summary>
+        /// Add two weights
+        /// </summary>
+        public static Quantity<WeightUnit> AddWeights(
+            double v1, WeightUnit u1,
+            double v2, WeightUnit u2)
         {
-            QuantityWeight w1 = new QuantityWeight(v1, u1);
-            QuantityWeight w2 = new QuantityWeight(v2, u2);
+            var w1 = new Quantity<WeightUnit>(v1, u1);
+            var w2 = new Quantity<WeightUnit>(v2, u2);
 
-            return QuantityWeight.Add(w1, w2);
+            return w1.Add(w2, u1);
         }
     }
 }

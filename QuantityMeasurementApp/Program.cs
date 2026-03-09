@@ -1,9 +1,13 @@
 ﻿using System;
 using QuantityMeasurementApp.Models;
-using QuantityMeasurementApp.Services;
 
 namespace QuantityMeasurementApp
 {
+    /// <summary>
+    /// UC10 Implementation
+    /// Refactored application to use Generic Quantity<U> class.
+    /// All UC1–UC9 functionality is preserved while using the generic design.
+    /// </summary>
     public class Program
     {
         public static void Main(string[] args)
@@ -21,11 +25,16 @@ namespace QuantityMeasurementApp
                 Console.WriteLine("6. Add Two Lengths With Target Unit (UC7)");
                 Console.WriteLine("7. Standalone LengthUnit Conversion Operations (UC8)");
                 Console.WriteLine("8. Weight Measurement Operations (UC9)");
-                Console.WriteLine("9. Exit");
+                Console.WriteLine("9. Generic Quantity Demo (UC10)");
+                Console.WriteLine("10. Exit");
 
                 Console.Write("Enter choice: ");
 
-                choice = Convert.ToInt32(Console.ReadLine());
+                if (!int.TryParse(Console.ReadLine(), out choice))
+                {
+                    Console.WriteLine("Invalid input!");
+                    continue;
+                }
 
                 try
                 {
@@ -33,30 +42,39 @@ namespace QuantityMeasurementApp
                     {
                         // ---------- UC1 ----------
                         case 1:
+
                             Console.Write("Enter first feet value: ");
                             double f1 = Convert.ToDouble(Console.ReadLine());
 
                             Console.Write("Enter second feet value: ");
                             double f2 = Convert.ToDouble(Console.ReadLine());
 
-                            Console.WriteLine("Equal: " +
-                                QuantityMeasurementService.AreFeetEqual(f1, f2));
+                            var feet1 = new Quantity<LengthUnit>(f1, LengthUnit.FEET);
+                            var feet2 = new Quantity<LengthUnit>(f2, LengthUnit.FEET);
+
+                            Console.WriteLine("Equal: " + feet1.Equals(feet2));
+
                             break;
 
                         // ---------- UC2 ----------
                         case 2:
+
                             Console.Write("Enter first inches value: ");
                             double i1 = Convert.ToDouble(Console.ReadLine());
 
                             Console.Write("Enter second inches value: ");
                             double i2 = Convert.ToDouble(Console.ReadLine());
 
-                            Console.WriteLine("Equal: " +
-                                QuantityMeasurementService.AreInchesEqual(i1, i2));
+                            var inch1 = new Quantity<LengthUnit>(i1, LengthUnit.INCHES);
+                            var inch2 = new Quantity<LengthUnit>(i2, LengthUnit.INCHES);
+
+                            Console.WriteLine("Equal: " + inch1.Equals(inch2));
+
                             break;
 
-                        // ---------- UC3 + UC4 ----------
+                        // ---------- UC3 / UC4 ----------
                         case 3:
+
                             Console.Write("Enter first value: ");
                             double v1 = Convert.ToDouble(Console.ReadLine());
 
@@ -71,12 +89,16 @@ namespace QuantityMeasurementApp
                             DisplayUnits();
                             LengthUnit u2 = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
 
-                            Console.WriteLine("Equal: " +
-                                QuantityMeasurementService.AreLengthEqual(v1, u1, v2, u2));
+                            var q1 = new Quantity<LengthUnit>(v1, u1);
+                            var q2 = new Quantity<LengthUnit>(v2, u2);
+
+                            Console.WriteLine("Equal: " + q1.Equals(q2));
+
                             break;
 
                         // ---------- UC5 ----------
                         case 4:
+
                             Console.Write("Enter value to convert: ");
                             double value = Convert.ToDouble(Console.ReadLine());
 
@@ -88,13 +110,15 @@ namespace QuantityMeasurementApp
                             DisplayUnits();
                             LengthUnit to = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
 
-                            double result = QuantityMeasurementService.ConvertLength(value, from, to);
+                            var quantity = new Quantity<LengthUnit>(value, from);
 
-                            Console.WriteLine("Converted Value: " + result);
+                            Console.WriteLine("Converted Value: " + quantity.ConvertTo(to));
+
                             break;
 
                         // ---------- UC6 ----------
                         case 5:
+
                             Console.Write("Enter first value: ");
                             double a1 = Convert.ToDouble(Console.ReadLine());
 
@@ -109,14 +133,18 @@ namespace QuantityMeasurementApp
                             DisplayUnits();
                             LengthUnit ua2 = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
 
-                            var sum = QuantityMeasurementService.AddLengths(a1, ua1, a2, ua2);
+                            var add1 = new Quantity<LengthUnit>(a1, ua1);
+                            var add2 = new Quantity<LengthUnit>(a2, ua2);
 
-                            Console.WriteLine($"Result: {sum.Value} {sum.Unit}");
+                            var result = add1.Add(add2, ua1);
+
+                            Console.WriteLine($"Result: {result}");
+
                             break;
-
 
                         // ---------- UC7 ----------
                         case 6:
+
                             Console.Write("Enter first value: ");
                             double b1 = Convert.ToDouble(Console.ReadLine());
 
@@ -135,17 +163,17 @@ namespace QuantityMeasurementApp
                             DisplayUnits();
                             LengthUnit target = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
 
-                            var resultUC7 = QuantityMeasurementService.AddLengths(
-                                b1, ub1, b2, ub2, target);
+                            var addA = new Quantity<LengthUnit>(b1, ub1);
+                            var addB = new Quantity<LengthUnit>(b2, ub2);
 
-                            Console.WriteLine($"Result: {resultUC7.Value} {resultUC7.Unit}");
+                            var resultUC7 = addA.Add(addB, target);
+
+                            Console.WriteLine($"Result: {resultUC7}");
+
                             break;
-
 
                         // ---------- UC8 ----------
                         case 7:
-
-                            Console.WriteLine("\nUC8: Standalone LengthUnit Conversion Operations");
 
                             Console.Write("Enter value: ");
                             double inputValue = Convert.ToDouble(Console.ReadLine());
@@ -154,22 +182,13 @@ namespace QuantityMeasurementApp
                             DisplayUnits();
                             LengthUnit selectedUnit = (LengthUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
 
-                            // Convert to base unit (FEET)
                             double baseValue = selectedUnit.ConvertToBaseUnit(inputValue);
 
-                            Console.WriteLine($"Converted to base unit (FEET): {baseValue}");
-
-                            // Convert back from base unit
-                            double reconverted = selectedUnit.ConvertFromBaseUnit(baseValue);
-
-                            Console.WriteLine($"Converted back to {selectedUnit}: {reconverted}");
-
-                            Console.WriteLine("UC8 Demonstration Complete: LengthUnit handles unit conversion.");
+                            Console.WriteLine($"Converted to FEET: {baseValue}");
 
                             break;
 
-                          
-                          // ------------UC9--------------
+                        // ---------- UC9 ----------
                         case 8:
 
                             Console.Write("Enter first weight value: ");
@@ -186,13 +205,45 @@ namespace QuantityMeasurementApp
                             DisplayWeightUnits();
                             WeightUnit wu2 = (WeightUnit)(Convert.ToInt32(Console.ReadLine()) - 1);
 
-                            var weightSum = QuantityMeasurementService.AddWeights(w1, wu1, w2, wu2);
+                            var weight1 = new Quantity<WeightUnit>(w1, wu1);
+                            var weight2 = new Quantity<WeightUnit>(w2, wu2);
 
-                            Console.WriteLine($"Result: {weightSum.Value} {weightSum.Unit}");
+                            var weightSum = weight1.Add(weight2, wu1);
+
+                            Console.WriteLine($"Result: {weightSum}");
 
                             break;
 
+                        // ---------- UC10 ----------
                         case 9:
+
+                            Console.WriteLine("\n--- UC10 Generic Quantity Demonstration ---");
+
+                            var length1 = new Quantity<LengthUnit>(1, LengthUnit.FEET);
+                            var length2 = new Quantity<LengthUnit>(12, LengthUnit.INCHES);
+
+                            Console.WriteLine($"1 FEET == 12 INCHES → {length1.Equals(length2)}");
+
+                            var lengthConverted = length1.ConvertTo(LengthUnit.INCHES);
+                            Console.WriteLine($"1 FEET in INCHES → {lengthConverted}");
+
+                            var lengthSum = length1.Add(length2, LengthUnit.FEET);
+                            Console.WriteLine($"1 FEET + 12 INCHES → {lengthSum}");
+
+                            var weightA = new Quantity<WeightUnit>(1, WeightUnit.KILOGRAM);
+                            var weightB = new Quantity<WeightUnit>(1000, WeightUnit.GRAM);
+
+                            Console.WriteLine($"1 KG == 1000 GRAM → {weightA.Equals(weightB)}");
+
+                            var weightConverted = weightA.ConvertTo(WeightUnit.GRAM);
+                            Console.WriteLine($"1 KG in GRAM → {weightConverted}");
+
+                            var weightAdd = weightA.Add(weightB, WeightUnit.KILOGRAM);
+                            Console.WriteLine($"1 KG + 1000 GRAM → {weightAdd}");
+
+                            break;
+
+                        case 10:
                             Console.WriteLine("Exiting application...");
                             break;
 
@@ -206,10 +257,9 @@ namespace QuantityMeasurementApp
                     Console.WriteLine("Invalid input!");
                 }
 
-            } while (choice != 9);
+            } while (choice != 10);
         }
 
-        // Helper method to show units menu
         private static void DisplayUnits()
         {
             Console.WriteLine("1 = FEET");
@@ -217,8 +267,6 @@ namespace QuantityMeasurementApp
             Console.WriteLine("3 = YARDS");
             Console.WriteLine("4 = CENTIMETERS");
         }
-        
-        // helper method
 
         private static void DisplayWeightUnits()
         {
@@ -227,5 +275,4 @@ namespace QuantityMeasurementApp
             Console.WriteLine("3 = POUND");
         }
     }
-
 }

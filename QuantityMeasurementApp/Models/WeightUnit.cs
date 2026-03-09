@@ -2,6 +2,9 @@ using System;
 
 namespace QuantityMeasurementApp.Models
 {
+    /// <summary>
+    /// UC10: Weight units implementing IMeasurable
+    /// </summary>
     public enum WeightUnit
     {
         KILOGRAM,
@@ -11,28 +14,42 @@ namespace QuantityMeasurementApp.Models
 
     public static class WeightUnitExtensions
     {
-        // Convert to base unit (KILOGRAM)
-        public static double ConvertToBaseUnit(this WeightUnit unit, double value)
+        /// <summary>
+        /// Returns conversion factor relative to KG
+        /// </summary>
+        public static double GetConversionFactor(this WeightUnit unit)
         {
             return unit switch
             {
-                WeightUnit.KILOGRAM => value,
-                WeightUnit.GRAM => value * 0.001,
-                WeightUnit.POUND => value * 0.453592,
+                WeightUnit.KILOGRAM => 1,
+                WeightUnit.GRAM => 0.001,
+                WeightUnit.POUND => 0.453592,
                 _ => throw new ArgumentException("Invalid weight unit")
             };
         }
 
-        // Convert from base unit
+        /// <summary>
+        /// Convert value to base unit (KG)
+        /// </summary>
+        public static double ConvertToBaseUnit(this WeightUnit unit, double value)
+        {
+            return value * unit.GetConversionFactor();
+        }
+
+        /// <summary>
+        /// Convert from base unit
+        /// </summary>
         public static double ConvertFromBaseUnit(this WeightUnit unit, double baseValue)
         {
-            return unit switch
-            {
-                WeightUnit.KILOGRAM => baseValue,
-                WeightUnit.GRAM => baseValue / 0.001,
-                WeightUnit.POUND => baseValue / 0.453592,
-                _ => throw new ArgumentException("Invalid weight unit")
-            };
+            return baseValue / unit.GetConversionFactor();
+        }
+
+        /// <summary>
+        /// Returns unit name
+        /// </summary>
+        public static string GetUnitName(this WeightUnit unit)
+        {
+            return unit.ToString();
         }
     }
 }

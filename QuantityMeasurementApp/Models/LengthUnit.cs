@@ -2,7 +2,9 @@ using System;
 
 namespace QuantityMeasurementApp.Models
 {
-    // UC8: Standalone enum with conversion responsibility
+    /// <summary>
+    /// UC10: Length units used with generic Quantity class
+    /// </summary>
     public enum LengthUnit
     {
         FEET,
@@ -13,30 +15,35 @@ namespace QuantityMeasurementApp.Models
 
     public static class LengthUnitExtensions
     {
-        // Convert value from this unit to base unit (FEET)
-        public static double ConvertToBaseUnit(this LengthUnit unit, double value)
+        /// <summary>
+        /// Returns conversion factor relative to FEET
+        /// </summary>
+        public static double GetConversionFactor(this LengthUnit unit)
         {
             return unit switch
             {
-                LengthUnit.FEET => value,
-                LengthUnit.INCHES => value / 12.0,
-                LengthUnit.YARDS => value * 3.0,
-                LengthUnit.CENTIMETERS => value * 0.0328084,
+                LengthUnit.FEET => 1,
+                LengthUnit.INCHES => 1.0 / 12,
+                LengthUnit.YARDS => 3,
+                LengthUnit.CENTIMETERS => 0.0328084,
                 _ => throw new ArgumentException("Invalid unit")
             };
         }
 
-        // Convert value from base unit (FEET) to target unit
+        /// <summary>
+        /// Convert value to base unit (FEET)
+        /// </summary>
+        public static double ConvertToBaseUnit(this LengthUnit unit, double value)
+        {
+            return value * unit.GetConversionFactor();
+        }
+
+        /// <summary>
+        /// Convert value from base unit (FEET)
+        /// </summary>
         public static double ConvertFromBaseUnit(this LengthUnit unit, double baseValue)
         {
-            return unit switch
-            {
-                LengthUnit.FEET => baseValue,
-                LengthUnit.INCHES => baseValue * 12.0,
-                LengthUnit.YARDS => baseValue / 3.0,
-                LengthUnit.CENTIMETERS => baseValue / 0.0328084,
-                _ => throw new ArgumentException("Invalid unit")
-            };
+            return baseValue / unit.GetConversionFactor();
         }
     }
 }
