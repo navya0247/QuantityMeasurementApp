@@ -25,7 +25,8 @@ namespace QuantityMeasurementApp
                 Console.WriteLine("8. Weight Measurement Operations (UC9)");
                 Console.WriteLine("9. Generic Quantity Demo (UC10)");
                 Console.WriteLine("10. Volume Measurement Operations (UC11)");
-                Console.WriteLine("11. Exit");
+                Console.WriteLine("11. Subtraction and Division Operations (UC12)");
+                Console.WriteLine("12. Exit");
 
                 Console.Write("Enter choice: ");
                 choice = Convert.ToInt32(Console.ReadLine());
@@ -199,7 +200,29 @@ namespace QuantityMeasurementApp
 
                             break;
 
+                        // ---------------- UC12 ----------------
+
                         case 11:
+                            {
+                                Console.WriteLine("UC12 Subtraction and Division Demo");
+
+                                var r1 = new Quantity<LengthUnit>(10, LengthUnit.FEET);
+                                var r2 = new Quantity<LengthUnit>(6, LengthUnit.INCHES);
+
+                                var subtractResult = r1.Subtract(r2);
+
+                                Console.WriteLine($"10 FEET - 6 INCHES = {subtractResult}");
+
+                                var r3 = new Quantity<LengthUnit>(2, LengthUnit.FEET);
+
+                                var divideResult = r1.Divide(r3);
+
+                                Console.WriteLine($"10 FEET ÷ 2 FEET = {divideResult}");
+
+                                break;
+                            }
+
+                        case 12:
 
                             Console.WriteLine("Exiting application...");
                             break;
@@ -210,7 +233,7 @@ namespace QuantityMeasurementApp
                     Console.WriteLine("Invalid input!");
                 }
 
-            } while (choice != 11);
+            } while (choice != 12);
         }
 
         /// <summary>

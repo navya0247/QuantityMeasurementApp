@@ -157,5 +157,30 @@ namespace QuantityMeasurementApp.Services
 
             return q1.Add(q2, target).Value;
         }
+
+
+        /// <summary>
+        /// UC12
+        /// Subtracts two length quantities.
+        /// </summary>
+        public double SubtractLengths(double v1, LengthUnit u1, double v2, LengthUnit u2)
+        {
+            var q1 = new Quantity<LengthUnit>(v1, u1);
+            var q2 = new Quantity<LengthUnit>(v2, u2);
+
+            return q1.Subtract(q2).Value;
+        }
+
+        /// <summary>
+        /// UC12
+        /// Divides two length quantities.
+        /// </summary>
+        public double DivideLengths(double v1, LengthUnit u1, double v2, LengthUnit u2)
+        {
+            var q1 = new Quantity<LengthUnit>(v1, u1);
+            var q2 = new Quantity<LengthUnit>(v2, u2);
+
+            return q1.Divide(q2);
+        }
     }
 }
