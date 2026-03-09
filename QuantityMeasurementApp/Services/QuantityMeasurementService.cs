@@ -97,6 +97,7 @@ namespace QuantityMeasurementApp.Services
             return w1.Equals(w2);
         }
 
+        //------ UC10 --------
         /// <summary>
         /// Convert weight units
         /// </summary>
@@ -118,6 +119,43 @@ namespace QuantityMeasurementApp.Services
             var w2 = new Quantity<WeightUnit>(v2, u2);
 
             return w1.Add(w2, u1);
+        }
+
+
+
+        /// <summary>
+        /// UC11
+        /// Checks equality between two volume quantities.
+        /// </summary>
+        public bool AreVolumesEqual(double v1, VolumeUnit u1, double v2, VolumeUnit u2)
+        {
+            var q1 = new Quantity<VolumeUnit>(v1, u1);
+            var q2 = new Quantity<VolumeUnit>(v2, u2);
+
+            return q1.Equals(q2);
+        }
+
+        /// <summary>
+        /// UC11
+        /// Converts volume from one unit to another.
+        /// </summary>
+        public double ConvertVolume(double value, VolumeUnit from, VolumeUnit to)
+        {
+            var quantity = new Quantity<VolumeUnit>(value, from);
+
+            return quantity.ConvertTo(to).Value;
+        }
+
+        /// <summary>
+        /// UC11
+        /// Adds two volume quantities and returns result in target unit.
+        /// </summary>
+        public double AddVolumes(double v1, VolumeUnit u1, double v2, VolumeUnit u2, VolumeUnit target)
+        {
+            var q1 = new Quantity<VolumeUnit>(v1, u1);
+            var q2 = new Quantity<VolumeUnit>(v2, u2);
+
+            return q1.Add(q2, target).Value;
         }
     }
 }
