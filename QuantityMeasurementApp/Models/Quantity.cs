@@ -3,9 +3,13 @@ using System;
 namespace QuantityMeasurementApp.Models
 {
     /// <summary>
-    /// Generic Quantity class supporting Length, Weight and Volume measurements.
-    /// UC13 refactors arithmetic operations using centralized helper logic
-    /// to enforce DRY principle.
+    /// Generic Quantity class supporting multiple measurement categories.
+    ///
+    /// UC10: Generic quantity implementation
+    /// UC11: Volume measurement support
+    /// UC12: Add, Subtract, Divide operations
+    /// UC13: Centralized arithmetic logic
+    /// UC14: Temperature support with restricted arithmetic operations
     /// </summary>
     public class Quantity<U>
     {
@@ -14,21 +18,16 @@ namespace QuantityMeasurementApp.Models
 
         public Quantity(double value, U unit)
         {
+            if (unit == null)
+                throw new ArgumentException("Unit cannot be null");
+
             Value = value;
             Unit = unit;
         }
 
         /// <summary>
-        /// Arithmetic operation types used by centralized helper
+        /// Convert quantity to another unit
         /// </summary>
-        private enum ArithmeticOperation
-        {
-            ADD,
-            SUBTRACT,
-            DIVIDE
-        }
-
-        // Convert quantity to another unit
         public Quantity<U> ConvertTo(U targetUnit)
         {
             double baseValue = ConvertToBase(Value, Unit);
@@ -37,89 +36,55 @@ namespace QuantityMeasurementApp.Models
             return new Quantity<U>(converted, targetUnit);
         }
 
-        // ---------------- ADD ----------------
-
+        /// <summary>
+        /// Add quantities
+        /// </summary>
         public Quantity<U> Add(Quantity<U> other, U targetUnit)
         {
-            ValidateArithmeticOperands(other, targetUnit, true);
+            ValidateArithmetic(Unit, "ADD");
 
-            double baseResult = PerformBaseArithmetic(other, ArithmeticOperation.ADD);
-
-            double result = ConvertFromBase(baseResult, targetUnit);
-
-            return new Quantity<U>(result, targetUnit);
-        }
-
-        // ---------------- SUBTRACT ----------------
-
-        public Quantity<U> Subtract(Quantity<U> other)
-        {
-            return Subtract(other, Unit);
-        }
-
-        public Quantity<U> Subtract(Quantity<U> other, U targetUnit)
-        {
-            ValidateArithmeticOperands(other, targetUnit, true);
-
-            double baseResult = PerformBaseArithmetic(other, ArithmeticOperation.SUBTRACT);
-
-            double result = ConvertFromBase(baseResult, targetUnit);
-
-            return new Quantity<U>(result, targetUnit);
-        }
-
-        // ---------------- DIVIDE ----------------
-
-        public double Divide(Quantity<U> other)
-        {
-            ValidateArithmeticOperands(other, default, false);
-
-            return PerformBaseArithmetic(other, ArithmeticOperation.DIVIDE);
-        }
-
-        /// <summary>
-        /// Centralized validation for arithmetic operations
-        /// </summary>
-        private void ValidateArithmeticOperands(Quantity<U> other, U targetUnit, bool targetUnitRequired)
-        {
-            if (other == null)
-                throw new ArgumentException("Quantity cannot be null");
-
-            if (targetUnitRequired && targetUnit == null)
-                throw new ArgumentException("Target unit cannot be null");
-
-            if (double.IsNaN(Value) || double.IsInfinity(Value) ||
-                double.IsNaN(other.Value) || double.IsInfinity(other.Value))
-                throw new ArgumentException("Values must be finite");
-
-            if (Unit.GetType() != other.Unit.GetType())
-                throw new ArgumentException("Different measurement categories");
-        }
-
-        /// <summary>
-        /// Core centralized arithmetic logic
-        /// </summary>
-        private double PerformBaseArithmetic(Quantity<U> other, ArithmeticOperation operation)
-        {
             double base1 = ConvertToBase(Value, Unit);
             double base2 = ConvertToBase(other.Value, other.Unit);
 
-            return operation switch
-            {
-                ArithmeticOperation.ADD => base1 + base2,
+            double result = ConvertFromBase(base1 + base2, targetUnit);
 
-                ArithmeticOperation.SUBTRACT => base1 - base2,
-
-                ArithmeticOperation.DIVIDE => base2 == 0
-                    ? throw new ArithmeticException("Cannot divide by zero")
-                    : base1 / base2,
-
-                _ => throw new InvalidOperationException("Unsupported operation")
-            };
+            return new Quantity<U>(result, targetUnit);
         }
 
-        // ---------------- EQUALITY ----------------
+        /// <summary>
+        /// Subtract quantities
+        /// </summary>
+        public Quantity<U> Subtract(Quantity<U> other)
+        {
+            ValidateArithmetic(Unit, "SUBTRACT");
 
+            double base1 = ConvertToBase(Value, Unit);
+            double base2 = ConvertToBase(other.Value, other.Unit);
+
+            double result = ConvertFromBase(base1 - base2, Unit);
+
+            return new Quantity<U>(result, Unit);
+        }
+
+        /// <summary>
+        /// Divide quantities
+        /// </summary>
+        public double Divide(Quantity<U> other)
+        {
+            ValidateArithmetic(Unit, "DIVIDE");
+
+            double base1 = ConvertToBase(Value, Unit);
+            double base2 = ConvertToBase(other.Value, other.Unit);
+
+            if (base2 == 0)
+                throw new ArithmeticException("Cannot divide by zero");
+
+            return base1 / base2;
+        }
+
+        /// <summary>
+        /// Equality comparison using base unit
+        /// </summary>
         public override bool Equals(object obj)
         {
             if (obj is not Quantity<U> other)
@@ -141,7 +106,6 @@ namespace QuantityMeasurementApp.Models
             return $"{Value} {Unit}";
         }
 
-        // Convert value to base unit
         private static double ConvertToBase(double value, U unit)
         {
             if (unit is LengthUnit lu)
@@ -153,10 +117,12 @@ namespace QuantityMeasurementApp.Models
             if (unit is VolumeUnit vu)
                 return vu.ConvertToBaseUnit(value);
 
+            if (unit is TemperatureUnit tu)
+                return tu.ConvertToBaseUnit(value);
+
             throw new InvalidOperationException("Unsupported unit type");
         }
 
-        // Convert base value to target unit
         private static double ConvertFromBase(double baseValue, U unit)
         {
             if (unit is LengthUnit lu)
@@ -168,7 +134,20 @@ namespace QuantityMeasurementApp.Models
             if (unit is VolumeUnit vu)
                 return vu.ConvertFromBaseUnit(baseValue);
 
+            if (unit is TemperatureUnit tu)
+                return tu.ConvertFromBaseUnit(baseValue);
+
             throw new InvalidOperationException("Unsupported unit type");
+        }
+
+        /// <summary>
+        /// Validates arithmetic support for specific units.
+        /// Temperature throws exception here.
+        /// </summary>
+        private static void ValidateArithmetic(U unit, string operation)
+        {
+            if (unit is TemperatureUnit tu)
+                tu.ValidateOperationSupport(operation);
         }
     }
 }

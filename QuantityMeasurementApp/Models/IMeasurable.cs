@@ -1,28 +1,52 @@
+using System;
+
 namespace QuantityMeasurementApp.Models
 {
     /// <summary>
-    /// UC10: Interface that defines behaviour for all measurement units
+    /// UC10
+    /// Base interface for all measurable units.
+    /// Provides methods for converting values to and from a base unit.
+    ///
+    /// UC14 Update:
+    /// Introduces optional arithmetic operation support using default methods.
+    /// This allows measurement categories like Temperature to disable
     /// </summary>
     public interface IMeasurable
     {
         /// <summary>
-        /// Returns conversion factor relative to base unit
-        /// </summary>
-        double GetConversionFactor();
-
-        /// <summary>
-        /// Convert value to base unit
+        /// Converts value to base unit of the measurement category.
         /// </summary>
         double ConvertToBaseUnit(double value);
 
         /// <summary>
-        /// Convert value from base unit
+        /// Converts value from base unit to this unit.
         /// </summary>
         double ConvertFromBaseUnit(double baseValue);
 
         /// <summary>
-        /// Returns unit name
+        /// Functional interface used to indicate if arithmetic is supported.
         /// </summary>
-        string GetUnitName();
+        public delegate bool SupportsArithmetic();
+
+
+        /// <summary>
+        /// Indicates whether arithmetic operations are supported.
+        /// Default implementation allows arithmetic.
+        /// TemperatureUnit will override this.
+        /// </summary>
+        public bool SupportsArithmeticOperations()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Validates if the arithmetic operation is supported.
+        /// Default implementation allows all operations.
+        /// TemperatureUnit overrides this method.
+        /// </summary>
+        public virtual void ValidateOperationSupport(string operation)
+        {
+            // Default implementation allows arithmetic
+        }
     }
 }

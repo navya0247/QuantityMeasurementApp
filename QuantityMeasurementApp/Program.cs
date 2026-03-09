@@ -26,7 +26,8 @@ namespace QuantityMeasurementApp
                 Console.WriteLine("9. Generic Quantity Demo (UC10)");
                 Console.WriteLine("10. Volume Measurement Operations (UC11)");
                 Console.WriteLine("11. Subtraction and Division Operations (UC12)");
-                Console.WriteLine("12. Exit");
+                Console.WriteLine("12.Temperature Measurement Operations (UC14)");
+                Console.WriteLine("13. Exit");
 
                 Console.Write("Enter choice: ");
                 choice = Convert.ToInt32(Console.ReadLine());
@@ -190,13 +191,13 @@ namespace QuantityMeasurementApp
                             var volume1 = new Quantity<VolumeUnit>(1, VolumeUnit.LITRE);
                             var volume2 = new Quantity<VolumeUnit>(1000, VolumeUnit.MILLILITRE);
 
-                            Console.WriteLine($"1 L == 1000 mL → {volume1.Equals(volume2)}");
+                            Console.WriteLine($"1 L == 1000 mL - {volume1.Equals(volume2)}");
 
                             var converted = volume1.ConvertTo(VolumeUnit.MILLILITRE);
-                            Console.WriteLine($"1 L in mL → {converted}");
+                            Console.WriteLine($"1 L in mL - {converted}");
 
                             var sum = volume1.Add(volume2, VolumeUnit.LITRE);
-                            Console.WriteLine($"1 L + 1000 mL → {sum}");
+                            Console.WriteLine($"1 L + 1000 mL - {sum}");
 
                             break;
 
@@ -222,7 +223,31 @@ namespace QuantityMeasurementApp
                                 break;
                             }
 
+                          //----------- UC14 ---------------
                         case 12:
+
+                            Console.WriteLine("UC14 Temperature Demo");
+
+                            var t1 = new Quantity<TemperatureUnit>(0, TemperatureUnit.CELSIUS);
+                            var t2 = new Quantity<TemperatureUnit>(32, TemperatureUnit.FAHRENHEIT);
+
+                            Console.WriteLine($"0C == 32F : {t1.Equals(t2)}");
+
+                            var convert = t1.ConvertTo(TemperatureUnit.FAHRENHEIT);
+                            Console.WriteLine($"0C in Fahrenheit : {convert}");
+
+                            try
+                            {
+                                t1.Add(t2, TemperatureUnit.CELSIUS);
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e.Message);
+                            }
+
+                            break;
+
+                        case 13:
 
                             Console.WriteLine("Exiting application...");
                             break;
