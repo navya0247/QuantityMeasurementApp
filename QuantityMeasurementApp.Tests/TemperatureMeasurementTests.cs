@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantityMeasurementApp.Models;
+using QuantityMeasurementApp.ModelLayer.Models;
+using QuantityMeasurementApp.BusinessLayer.Services;
 using System;
 
 namespace QuantityMeasurementApp.Tests
@@ -19,8 +20,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void TemperatureEquality_CelsiusToFahrenheit()
         {
-            var t1 = new Quantity<TemperatureUnit>(0, TemperatureUnit.CELSIUS);
-            var t2 = new Quantity<TemperatureUnit>(32, TemperatureUnit.FAHRENHEIT);
+            var t1 = new Quantity<TemperatureEnum>(0, TemperatureEnum.CELSIUS);
+            var t2 = new Quantity<TemperatureEnum>(32, TemperatureEnum.FAHRENHEIT);
 
             Assert.IsTrue(t1.Equals(t2));
         }
@@ -32,8 +33,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void TemperatureEquality_CelsiusToKelvin()
         {
-            var t1 = new Quantity<TemperatureUnit>(0, TemperatureUnit.CELSIUS);
-            var t2 = new Quantity<TemperatureUnit>(273.15, TemperatureUnit.KELVIN);
+            var t1 = new Quantity<TemperatureEnum>(0, TemperatureEnum.CELSIUS);
+            var t2 = new Quantity<TemperatureEnum>(273.15, TemperatureEnum.KELVIN);
 
             Assert.IsTrue(t1.Equals(t2));
         }
@@ -45,9 +46,9 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void TemperatureConversion_CelsiusToFahrenheit()
         {
-            var temp = new Quantity<TemperatureUnit>(100, TemperatureUnit.CELSIUS);
+            var temp = new Quantity<TemperatureEnum>(100, TemperatureEnum.CELSIUS);
 
-            var result = temp.ConvertTo(TemperatureUnit.FAHRENHEIT);
+            var result = temp.ConvertTo(TemperatureEnum.FAHRENHEIT);
 
             Assert.AreEqual(212, result.Value, 0.01);
         }
@@ -59,9 +60,9 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void TemperatureConversion_FahrenheitToCelsius()
         {
-            var temp = new Quantity<TemperatureUnit>(32, TemperatureUnit.FAHRENHEIT);
+            var temp = new Quantity<TemperatureEnum>(32, TemperatureEnum.FAHRENHEIT);
 
-            var result = temp.ConvertTo(TemperatureUnit.CELSIUS);
+            var result = temp.ConvertTo(TemperatureEnum.CELSIUS);
 
             Assert.AreEqual(0, result.Value, 0.01);
         }
@@ -72,9 +73,9 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void TemperatureConversion_CelsiusToKelvin()
         {
-            var temp = new Quantity<TemperatureUnit>(0, TemperatureUnit.CELSIUS);
+            var temp = new Quantity<TemperatureEnum>(0, TemperatureEnum.CELSIUS);
 
-            var result = temp.ConvertTo(TemperatureUnit.KELVIN);
+            var result = temp.ConvertTo(TemperatureEnum.KELVIN);
 
             Assert.AreEqual(273.15, result.Value, 0.01);
         }
@@ -85,12 +86,12 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void Temperature_Addition_ShouldThrowException()
         {
-            var t1 = new Quantity<TemperatureUnit>(100, TemperatureUnit.CELSIUS);
-            var t2 = new Quantity<TemperatureUnit>(50, TemperatureUnit.CELSIUS);
+            var t1 = new Quantity<TemperatureEnum>(100, TemperatureEnum.CELSIUS);
+            var t2 = new Quantity<TemperatureEnum>(50, TemperatureEnum.CELSIUS);
 
             try
             {
-                t1.Add(t2, TemperatureUnit.CELSIUS);
+                t1.Add(t2, TemperatureEnum.CELSIUS);
                 Assert.Fail("Expected NotSupportedException was not thrown.");
             }
             catch (NotSupportedException)
@@ -105,8 +106,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void Temperature_Subtraction_ShouldThrowException()
         {
-            var t1 = new Quantity<TemperatureUnit>(100, TemperatureUnit.CELSIUS);
-            var t2 = new Quantity<TemperatureUnit>(50, TemperatureUnit.CELSIUS);
+            var t1 = new Quantity<TemperatureEnum>(100, TemperatureEnum.CELSIUS);
+            var t2 = new Quantity<TemperatureEnum>(50, TemperatureEnum.CELSIUS);
 
             try
             {
@@ -125,8 +126,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void Temperature_Division_ShouldThrowException()
         {
-            var t1 = new Quantity<TemperatureUnit>(100, TemperatureUnit.CELSIUS);
-            var t2 = new Quantity<TemperatureUnit>(50, TemperatureUnit.CELSIUS);
+            var t1 = new Quantity<TemperatureEnum>(100, TemperatureEnum.CELSIUS);
+            var t2 = new Quantity<TemperatureEnum>(50, TemperatureEnum.CELSIUS);
 
             try
             {
@@ -144,8 +145,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void TemperatureVsLength_ShouldReturnFalse()
         {
-            var temp = new Quantity<TemperatureUnit>(50, TemperatureUnit.CELSIUS);
-            var length = new Quantity<LengthUnit>(50, LengthUnit.FEET);
+            var temp = new Quantity<TemperatureEnum>(50, TemperatureEnum.CELSIUS);
+            var length = new Quantity<LengthEnum>(50, LengthEnum.FEET);
 
             Assert.IsFalse(temp.Equals(length));
         }

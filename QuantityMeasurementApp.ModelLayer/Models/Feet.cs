@@ -1,20 +1,29 @@
 using System;
-
-namespace QuantityMeasurementApp.Models
+namespace QuantityMeasurementApp.ModelLayer.Models
 {
-    // Class representing Inches measurement
-    public class Inches
+
+    /// <summary>
+    /// Domain model representing measurement units and quantity logic.
+    /// Used by the service layer for calculations.
+    /// </summary>
+    public class Feet
     {
-        // Private readonly field to store value safely
+        // Private readonly field for immutability
         private readonly double value;
 
-        // Constructor to initialize inches value
-        public Inches(double value)
+        // Constructor to initialize value
+        public Feet(double value)
         {
             this.value = value;
         }
 
-        // Override Equals method for value comparison
+        // Getter method
+        public double GetValue()
+        {
+            return value;
+        }
+
+        // Override equals method
         public override bool Equals(object obj)
         {
             // Check same reference
@@ -25,10 +34,10 @@ namespace QuantityMeasurementApp.Models
             if (obj == null || GetType() != obj.GetType())
                 return false;
 
-            // Safe casting
-            Inches other = (Inches)obj;
+            // Cast safely
+            Feet other = (Feet)obj;
 
-            
+
             return this.value.CompareTo(other.value) == 0;
         }
 

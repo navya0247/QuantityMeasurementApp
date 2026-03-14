@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantityMeasurementApp.Models;
+using QuantityMeasurementApp.ModelLayer.Models;
+using QuantityMeasurementApp.BusinessLayer.Services;
 
 namespace QuantityMeasurementApp.Tests
 {
@@ -13,8 +14,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void WeightEquality_KgToKg()
         {
-            var w1 = new Quantity<WeightUnit>(1.0, WeightUnit.KILOGRAM);
-            var w2 = new Quantity<WeightUnit>(1.0, WeightUnit.KILOGRAM);
+            var w1 = new Quantity<WeightEnum>(1.0, WeightEnum.KILOGRAM);
+            var w2 = new Quantity<WeightEnum>(1.0, WeightEnum.KILOGRAM);
 
             Assert.IsTrue(w1.Equals(w2));
         }
@@ -22,8 +23,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void WeightEquality_KgToGram()
         {
-            var w1 = new Quantity<WeightUnit>(1.0, WeightUnit.KILOGRAM);
-            var w2 = new Quantity<WeightUnit>(1000.0, WeightUnit.GRAM);
+            var w1 = new Quantity<WeightEnum>(1.0, WeightEnum.KILOGRAM);
+            var w2 = new Quantity<WeightEnum>(1000.0, WeightEnum.GRAM);
 
             Assert.IsTrue(w1.Equals(w2));
         }
@@ -31,8 +32,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void WeightEquality_KgToPound()
         {
-            var w1 = new Quantity<WeightUnit>(1.0, WeightUnit.KILOGRAM);
-            var w2 = new Quantity<WeightUnit>(2.20462, WeightUnit.POUND);
+            var w1 = new Quantity<WeightEnum>(1.0, WeightEnum.KILOGRAM);
+            var w2 = new Quantity<WeightEnum>(2.20462, WeightEnum.POUND);
 
             Assert.IsTrue(w1.Equals(w2));
         }
@@ -41,9 +42,9 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void WeightConversion_KgToGram()
         {
-            var w = new Quantity<WeightUnit>(1.0, WeightUnit.KILOGRAM);
+            var w = new Quantity<WeightEnum>(1.0, WeightEnum.KILOGRAM);
 
-            var result = w.ConvertTo(WeightUnit.GRAM);
+            var result = w.ConvertTo(WeightEnum.GRAM);
 
             Assert.AreEqual(1000.0, result.Value, 0.0001);
         }
@@ -51,9 +52,9 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void WeightConversion_GramToKg()
         {
-            var w = new Quantity<WeightUnit>(1000.0, WeightUnit.GRAM);
+            var w = new Quantity<WeightEnum>(1000.0, WeightEnum.GRAM);
 
-            var result = w.ConvertTo(WeightUnit.KILOGRAM);
+            var result = w.ConvertTo(WeightEnum.KILOGRAM);
 
             Assert.AreEqual(1.0, result.Value, 0.0001);
         }
@@ -62,10 +63,10 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void WeightAddition_KgPlusKg()
         {
-            var w1 = new Quantity<WeightUnit>(1.0, WeightUnit.KILOGRAM);
-            var w2 = new Quantity<WeightUnit>(2.0, WeightUnit.KILOGRAM);
+            var w1 = new Quantity<WeightEnum>(1.0, WeightEnum.KILOGRAM);
+            var w2 = new Quantity<WeightEnum>(2.0, WeightEnum.KILOGRAM);
 
-            var result = w1.Add(w2, WeightUnit.KILOGRAM);
+            var result = w1.Add(w2, WeightEnum.KILOGRAM);
 
             Assert.AreEqual(3.0, result.Value, 0.0001);
         }
@@ -73,10 +74,10 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void WeightAddition_KgPlusGram()
         {
-            var w1 = new Quantity<WeightUnit>(1.0, WeightUnit.KILOGRAM);
-            var w2 = new Quantity<WeightUnit>(1000.0, WeightUnit.GRAM);
+            var w1 = new Quantity<WeightEnum>(1.0, WeightEnum.KILOGRAM);
+            var w2 = new Quantity<WeightEnum>(1000.0, WeightEnum.GRAM);
 
-            var result = w1.Add(w2, WeightUnit.KILOGRAM);
+            var result = w1.Add(w2, WeightEnum.KILOGRAM);
 
             Assert.AreEqual(2.0, result.Value, 0.0001);
         }
@@ -85,8 +86,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void WeightEquality_Zero()
         {
-            var w1 = new Quantity<WeightUnit>(0.0, WeightUnit.KILOGRAM);
-            var w2 = new Quantity<WeightUnit>(0.0, WeightUnit.GRAM);
+            var w1 = new Quantity<WeightEnum>(0.0, WeightEnum.KILOGRAM);
+            var w2 = new Quantity<WeightEnum>(0.0, WeightEnum.GRAM);
 
             Assert.IsTrue(w1.Equals(w2));
         }
@@ -94,8 +95,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void WeightEquality_Negative()
         {
-            var w1 = new Quantity<WeightUnit>(-1.0, WeightUnit.KILOGRAM);
-            var w2 = new Quantity<WeightUnit>(-1000.0, WeightUnit.GRAM);
+            var w1 = new Quantity<WeightEnum>(-1.0, WeightEnum.KILOGRAM);
+            var w2 = new Quantity<WeightEnum>(-1000.0, WeightEnum.GRAM);
 
             Assert.IsTrue(w1.Equals(w2));
         }

@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantityMeasurementApp.Models;
+using QuantityMeasurementApp.ModelLayer.Models;
+using QuantityMeasurementApp.BusinessLayer.Services;
 
 namespace QuantityMeasurementApp.Tests
 {
@@ -16,8 +17,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void LitreToLitre_Equality()
         {
-            var v1 = new Quantity<VolumeUnit>(1, VolumeUnit.LITRE);
-            var v2 = new Quantity<VolumeUnit>(1, VolumeUnit.LITRE);
+            var v1 = new Quantity<VolumeEnum>(1, VolumeEnum.LITRE);
+            var v2 = new Quantity<VolumeEnum>(1, VolumeEnum.LITRE);
 
             Assert.IsTrue(v1.Equals(v2));
         }
@@ -28,8 +29,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void LitreToMillilitre_Equality()
         {
-            var v1 = new Quantity<VolumeUnit>(1, VolumeUnit.LITRE);
-            var v2 = new Quantity<VolumeUnit>(1000, VolumeUnit.MILLILITRE);
+            var v1 = new Quantity<VolumeEnum>(1, VolumeEnum.LITRE);
+            var v2 = new Quantity<VolumeEnum>(1000, VolumeEnum.MILLILITRE);
 
             Assert.IsTrue(v1.Equals(v2));
         }
@@ -40,8 +41,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void GallonToLitre_Equality()
         {
-            var v1 = new Quantity<VolumeUnit>(1, VolumeUnit.GALLON);
-            var v2 = new Quantity<VolumeUnit>(3.78541, VolumeUnit.LITRE);
+            var v1 = new Quantity<VolumeEnum>(1, VolumeEnum.GALLON);
+            var v2 = new Quantity<VolumeEnum>(3.78541, VolumeEnum.LITRE);
 
             Assert.IsTrue(v1.Equals(v2));
         }
@@ -52,9 +53,9 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void Convert_LitreToMillilitre()
         {
-            var v = new Quantity<VolumeUnit>(1, VolumeUnit.LITRE);
+            var v = new Quantity<VolumeEnum>(1, VolumeEnum.LITRE);
 
-            var result = v.ConvertTo(VolumeUnit.MILLILITRE);
+            var result = v.ConvertTo(VolumeEnum.MILLILITRE);
 
             Assert.AreEqual(1000, result.Value, 0.001);
         }
@@ -65,9 +66,9 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void Convert_GallonToLitre()
         {
-            var v = new Quantity<VolumeUnit>(1, VolumeUnit.GALLON);
+            var v = new Quantity<VolumeEnum>(1, VolumeEnum.GALLON);
 
-            var result = v.ConvertTo(VolumeUnit.LITRE);
+            var result = v.ConvertTo(VolumeEnum.LITRE);
 
             Assert.AreEqual(3.78541, result.Value, 0.001);
         }
@@ -78,10 +79,10 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void Add_LitrePlusMillilitre()
         {
-            var v1 = new Quantity<VolumeUnit>(1, VolumeUnit.LITRE);
-            var v2 = new Quantity<VolumeUnit>(1000, VolumeUnit.MILLILITRE);
+            var v1 = new Quantity<VolumeEnum>(1, VolumeEnum.LITRE);
+            var v2 = new Quantity<VolumeEnum>(1000, VolumeEnum.MILLILITRE);
 
-            var result = v1.Add(v2, VolumeUnit.LITRE);
+            var result = v1.Add(v2, VolumeEnum.LITRE);
 
             Assert.AreEqual(2, result.Value, 0.001);
         }
@@ -92,10 +93,10 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void Add_GallonPlusLitre()
         {
-            var v1 = new Quantity<VolumeUnit>(1, VolumeUnit.GALLON);
-            var v2 = new Quantity<VolumeUnit>(3.78541, VolumeUnit.LITRE);
+            var v1 = new Quantity<VolumeEnum>(1, VolumeEnum.GALLON);
+            var v2 = new Quantity<VolumeEnum>(3.78541, VolumeEnum.LITRE);
 
-            var result = v1.Add(v2, VolumeUnit.GALLON);
+            var result = v1.Add(v2, VolumeEnum.GALLON);
 
             Assert.AreEqual(2, result.Value, 0.01);
         }

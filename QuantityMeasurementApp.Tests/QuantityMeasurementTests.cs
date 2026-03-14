@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantityMeasurementApp.Models;
-using QuantityMeasurementApp.Services;
+using QuantityMeasurementApp.ModelLayer.Models;
+using QuantityMeasurementApp.BusinessLayer.Services;
 
 namespace QuantityMeasurementApp.Tests
 {
@@ -43,8 +43,8 @@ namespace QuantityMeasurementApp.Tests
         {
             Assert.IsTrue(
                 QuantityMeasurementService.AreLengthEqual(
-                    1.0, LengthUnit.FEET,
-                    1.0, LengthUnit.FEET));
+                    1.0, LengthEnum.FEET,
+                    1.0, LengthEnum.FEET));
         }
 
         [TestMethod]
@@ -52,8 +52,8 @@ namespace QuantityMeasurementApp.Tests
         {
             Assert.IsTrue(
                 QuantityMeasurementService.AreLengthEqual(
-                    1.0, LengthUnit.FEET,
-                    12.0, LengthUnit.INCHES));
+                    1.0, LengthEnum.FEET,
+                    12.0, LengthEnum.INCHES));
         }
 
         // ---------- UC4 ----------
@@ -62,8 +62,8 @@ namespace QuantityMeasurementApp.Tests
         {
             Assert.IsTrue(
                 QuantityMeasurementService.AreLengthEqual(
-                    1.0, LengthUnit.YARDS,
-                    3.0, LengthUnit.FEET));
+                    1.0, LengthEnum.YARDS,
+                    3.0, LengthEnum.FEET));
         }
 
         [TestMethod]
@@ -71,8 +71,8 @@ namespace QuantityMeasurementApp.Tests
         {
             Assert.IsTrue(
                 QuantityMeasurementService.AreLengthEqual(
-                    2.54, LengthUnit.CENTIMETERS,
-                    1.0, LengthUnit.INCHES));
+                    2.54, LengthEnum.CENTIMETERS,
+                    1.0, LengthEnum.INCHES));
         }
 
         // ---------- UC5 ----------
@@ -80,7 +80,7 @@ namespace QuantityMeasurementApp.Tests
         public void Convert_FeetToInches_Returns12()
         {
             double result = QuantityMeasurementService.ConvertLength(
-                1.0, LengthUnit.FEET, LengthUnit.INCHES);
+                1.0, LengthEnum.FEET, LengthEnum.INCHES);
 
             Assert.AreEqual(12.0, result, 0.0001);
         }
@@ -89,7 +89,7 @@ namespace QuantityMeasurementApp.Tests
         public void Convert_InchesToFeet_Returns2()
         {
             double result = QuantityMeasurementService.ConvertLength(
-                24.0, LengthUnit.INCHES, LengthUnit.FEET);
+                24.0, LengthEnum.INCHES, LengthEnum.FEET);
 
             Assert.AreEqual(2.0, result, 0.0001);
         }
@@ -99,8 +99,8 @@ namespace QuantityMeasurementApp.Tests
         public void Add_FeetPlusFeet_Returns3Feet()
         {
             var result = QuantityMeasurementService.AddLengths(
-                1.0, LengthUnit.FEET,
-                2.0, LengthUnit.FEET);
+                1.0, LengthEnum.FEET,
+                2.0, LengthEnum.FEET);
 
             Assert.AreEqual(3.0, result.Value, 0.0001);
         }
@@ -109,8 +109,8 @@ namespace QuantityMeasurementApp.Tests
         public void Add_FeetPlusInches_Returns2Feet()
         {
             var result = QuantityMeasurementService.AddLengths(
-                1.0, LengthUnit.FEET,
-                12.0, LengthUnit.INCHES);
+                1.0, LengthEnum.FEET,
+                12.0, LengthEnum.INCHES);
 
             Assert.AreEqual(2.0, result.Value, 0.0001);
         }
@@ -120,9 +120,9 @@ namespace QuantityMeasurementApp.Tests
         public void Add_WithTargetUnit_Inches()
         {
             var result = QuantityMeasurementService.AddLengths(
-                1.0, LengthUnit.FEET,
-                12.0, LengthUnit.INCHES,
-                LengthUnit.INCHES);
+                1.0, LengthEnum.FEET,
+                12.0, LengthEnum.INCHES,
+                LengthEnum.INCHES);
 
             Assert.AreEqual(24.0, result.Value, 0.0001);
         }
@@ -131,9 +131,9 @@ namespace QuantityMeasurementApp.Tests
         public void Add_WithTargetUnit_Yards()
         {
             var result = QuantityMeasurementService.AddLengths(
-                1.0, LengthUnit.FEET,
-                12.0, LengthUnit.INCHES,
-                LengthUnit.YARDS);
+                1.0, LengthEnum.FEET,
+                12.0, LengthEnum.INCHES,
+                LengthEnum.YARDS);
 
             Assert.AreEqual(0.6667, result.Value, 0.0001);
         }
@@ -142,7 +142,7 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void LengthUnit_ConvertToBaseUnit()
         {
-            double result = LengthUnit.INCHES.ConvertToBaseUnit(12);
+           double result = LengthUnit.ConvertToBaseUnit(LengthEnum.INCHES, 12);
 
             Assert.AreEqual(1.0, result, 0.0001);
         }
@@ -150,7 +150,7 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void LengthUnit_ConvertFromBaseUnit()
         {
-            double result = LengthUnit.INCHES.ConvertFromBaseUnit(1);
+            double result = LengthUnit.ConvertFromBaseUnit(LengthEnum.INCHES, 1);
 
             Assert.AreEqual(12.0, result, 0.0001);
         }
@@ -159,8 +159,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void GenericQuantity_LengthEquality()
         {
-            var q1 = new Quantity<LengthUnit>(1.0, LengthUnit.FEET);
-            var q2 = new Quantity<LengthUnit>(12.0, LengthUnit.INCHES);
+            var q1 = new Quantity<LengthEnum>(1.0, LengthEnum.FEET);
+            var q2 = new Quantity<LengthEnum>(12.0, LengthEnum.INCHES);
 
             Assert.IsTrue(q1.Equals(q2));
         }
@@ -168,9 +168,9 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void GenericQuantity_LengthConversion()
         {
-            var q = new Quantity<LengthUnit>(1.0, LengthUnit.FEET);
+            var q = new Quantity<LengthEnum>(1.0, LengthEnum.FEET);
 
-            var result = q.ConvertTo(LengthUnit.INCHES);
+            var result = q.ConvertTo(LengthEnum.INCHES);
 
             Assert.AreEqual(12.0, result.Value, 0.0001);
         }
@@ -178,10 +178,10 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void GenericQuantity_LengthAddition()
         {
-            var q1 = new Quantity<LengthUnit>(1.0, LengthUnit.FEET);
-            var q2 = new Quantity<LengthUnit>(12.0, LengthUnit.INCHES);
+            var q1 = new Quantity<LengthEnum>(1.0, LengthEnum.FEET);
+            var q2 = new Quantity<LengthEnum>(12.0, LengthEnum.INCHES);
 
-            var result = q1.Add(q2, LengthUnit.FEET);
+            var result = q1.Add(q2, LengthEnum.FEET);
 
             Assert.AreEqual(2.0, result.Value, 0.0001);
         }

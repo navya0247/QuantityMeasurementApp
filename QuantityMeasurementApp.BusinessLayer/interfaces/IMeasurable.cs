@@ -1,6 +1,11 @@
 using System;
 
-namespace QuantityMeasurementApp.Models
+/// <summary>
+/// Domain model representing measurement units and quantity logic.
+/// Used by the service layer for calculations.
+/// </summary>
+
+namespace QuantityMeasurementApp.ModelLayer.Models
 {
     /// <summary>
     /// UC10

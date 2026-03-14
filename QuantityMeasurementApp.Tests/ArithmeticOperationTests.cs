@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantityMeasurementApp.Models;
+using QuantityMeasurementApp.ModelLayer.Models;
+using QuantityMeasurementApp.BusinessLayer.Services;
 
 namespace QuantityMeasurementApp.Tests
 {
@@ -13,8 +14,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void Subtract_SameUnit_Length()
         {
-            var q1 = new Quantity<LengthUnit>(10, LengthUnit.FEET);
-            var q2 = new Quantity<LengthUnit>(5, LengthUnit.FEET);
+            var q1 = new Quantity<LengthEnum>(10, LengthEnum.FEET);
+            var q2 = new Quantity<LengthEnum>(5, LengthEnum.FEET);
 
             var result = q1.Subtract(q2);
 
@@ -24,8 +25,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void Subtract_CrossUnit_Length()
         {
-            var q1 = new Quantity<LengthUnit>(10, LengthUnit.FEET);
-            var q2 = new Quantity<LengthUnit>(6, LengthUnit.INCHES);
+            var q1 = new Quantity<LengthEnum>(10, LengthEnum.FEET);
+            var q2 = new Quantity<LengthEnum>(6, LengthEnum.INCHES);
 
             var result = q1.Subtract(q2);
 
@@ -35,8 +36,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void Subtract_LitreMinusMillilitre()
         {
-            var q1 = new Quantity<VolumeUnit>(5, VolumeUnit.LITRE);
-            var q2 = new Quantity<VolumeUnit>(500, VolumeUnit.MILLILITRE);
+            var q1 = new Quantity<VolumeEnum>(5, VolumeEnum.LITRE);
+            var q2 = new Quantity<VolumeEnum>(500, VolumeEnum.MILLILITRE);
 
             var result = q1.Subtract(q2);
 
@@ -46,8 +47,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void Divide_Lengths()
         {
-            var q1 = new Quantity<LengthUnit>(10, LengthUnit.FEET);
-            var q2 = new Quantity<LengthUnit>(2, LengthUnit.FEET);
+            var q1 = new Quantity<LengthEnum>(10, LengthEnum.FEET);
+            var q2 = new Quantity<LengthEnum>(2, LengthEnum.FEET);
 
             var result = q1.Divide(q2);
 
@@ -57,8 +58,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void Divide_Litre()
         {
-            var q1 = new Quantity<VolumeUnit>(10, VolumeUnit.LITRE);
-            var q2 = new Quantity<VolumeUnit>(5, VolumeUnit.LITRE);
+            var q1 = new Quantity<VolumeEnum>(10, VolumeEnum.LITRE);
+            var q2 = new Quantity<VolumeEnum>(5, VolumeEnum.LITRE);
 
             var result = q1.Divide(q2);
 
@@ -68,8 +69,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void Divide_ByZero()
         {
-            var q1 = new Quantity<LengthUnit>(10, LengthUnit.FEET);
-            var q2 = new Quantity<LengthUnit>(0, LengthUnit.FEET);
+            var q1 = new Quantity<LengthEnum>(10, LengthEnum.FEET);
+            var q2 = new Quantity<LengthEnum>(0, LengthEnum.FEET);
 
             try
             {

@@ -1,6 +1,12 @@
 using System;
+using QuantityMeasurementApp.BusinessLayer.Services;
 
-namespace QuantityMeasurementApp.Models
+/// <summary>
+/// Domain model representing measurement units and quantity logic.
+/// Used by the service layer for calculations.
+/// </summary>
+
+namespace QuantityMeasurementApp.ModelLayer.Models
 {
     /// <summary>
     /// Generic Quantity class supporting multiple measurement categories.
@@ -106,36 +112,42 @@ namespace QuantityMeasurementApp.Models
             return $"{Value} {Unit}";
         }
 
+        /// <summary>
+        /// Convert to base unit
+        /// </summary>
         private static double ConvertToBase(double value, U unit)
         {
-            if (unit is LengthUnit lu)
-                return lu.ConvertToBaseUnit(value);
+            if (unit is LengthEnum lu)
+                return LengthUnit.ConvertToBaseUnit(lu, value);
 
-            if (unit is WeightUnit wu)
-                return wu.ConvertToBaseUnit(value);
+            if (unit is WeightEnum wu)
+                return WeightUnit.ConvertToBaseUnit(wu, value);
 
-            if (unit is VolumeUnit vu)
-                return vu.ConvertToBaseUnit(value);
+            if (unit is VolumeEnum vu)
+                return VolumeUnit.ConvertToBaseUnit(vu, value);
 
-            if (unit is TemperatureUnit tu)
-                return tu.ConvertToBaseUnit(value);
+            if (unit is TemperatureEnum tu)
+                return TemperatureUnit.ConvertToBaseUnit(tu, value);
 
             throw new InvalidOperationException("Unsupported unit type");
         }
 
+        /// <summary>
+        /// Convert from base unit
+        /// </summary>
         private static double ConvertFromBase(double baseValue, U unit)
         {
-            if (unit is LengthUnit lu)
-                return lu.ConvertFromBaseUnit(baseValue);
+            if (unit is LengthEnum lu)
+                return LengthUnit.ConvertFromBaseUnit(lu, baseValue);
 
-            if (unit is WeightUnit wu)
-                return wu.ConvertFromBaseUnit(baseValue);
+            if (unit is WeightEnum wu)
+                return WeightUnit.ConvertFromBaseUnit(wu, baseValue);
 
-            if (unit is VolumeUnit vu)
-                return vu.ConvertFromBaseUnit(baseValue);
+            if (unit is VolumeEnum vu)
+                return VolumeUnit.ConvertFromBaseUnit(vu, baseValue);
 
-            if (unit is TemperatureUnit tu)
-                return tu.ConvertFromBaseUnit(baseValue);
+            if (unit is TemperatureEnum tu)
+                return TemperatureUnit.ConvertFromBaseUnit(tu, baseValue);
 
             throw new InvalidOperationException("Unsupported unit type");
         }
@@ -146,8 +158,8 @@ namespace QuantityMeasurementApp.Models
         /// </summary>
         private static void ValidateArithmetic(U unit, string operation)
         {
-            if (unit is TemperatureUnit tu)
-                tu.ValidateOperationSupport(operation);
+            if (unit is TemperatureEnum)
+                TemperatureUnit.ValidateOperationSupport(operation);
         }
     }
 }
