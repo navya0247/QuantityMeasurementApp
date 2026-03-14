@@ -1,10 +1,4 @@
-using System;
 using QuantityMeasurementApp.ModelLayer.Models;
-
-/// <summary>
-/// Service class handling volume unit conversions.
-/// Converts values to and from the base unit LITRE.
-/// </summary>
 
 namespace QuantityMeasurementApp.BusinessLayer.Services
 {
@@ -14,10 +8,10 @@ namespace QuantityMeasurementApp.BusinessLayer.Services
         {
             return unit switch
             {
-                VolumeEnum.LITRE => value,
+                VolumeEnum.LITRE      => value,
                 VolumeEnum.MILLILITRE => value * 0.001,
-                VolumeEnum.GALLON => value * 3.78541,
-                _ => throw new Exception("Invalid volume unit")
+                VolumeEnum.GALLON     => value * 3.78541,
+                _                     => throw new System.Exception("Invalid volume unit")
             };
         }
 
@@ -25,10 +19,10 @@ namespace QuantityMeasurementApp.BusinessLayer.Services
         {
             return unit switch
             {
-                VolumeEnum.LITRE => baseValue,
+                VolumeEnum.LITRE      => baseValue,
                 VolumeEnum.MILLILITRE => baseValue * 1000,
-                VolumeEnum.GALLON => baseValue / 3.78541,
-                _ => throw new Exception("Invalid volume unit")
+                VolumeEnum.GALLON     => baseValue / 3.78541,
+                _                     => throw new System.Exception("Invalid volume unit")
             };
         }
     }
