@@ -5,7 +5,6 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>QuantityMeasurementApp.API</RootNamespace>
-    <!-- Enables XML comments to show in Swagger -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
@@ -17,12 +16,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- JWT -->
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt"               Version="7.3.1" />
+
+    <!-- Password hashing -->
     <PackageReference Include="BCrypt.Net-Next"                                Version="4.0.3" />
+
+    <!-- Swagger -->
     <PackageReference Include="Swashbuckle.AspNetCore"                         Version="6.5.0" />
+
+    <!-- EF Core InMemory for fallback -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"         Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design"           Version="8.0.0" />
+
+    <!-- Redis -->
+    <PackageReference Include="StackExchange.Redis"                            Version="2.7.33" />
   </ItemGroup>
 
 </Project>
