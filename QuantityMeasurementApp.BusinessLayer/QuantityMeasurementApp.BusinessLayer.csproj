@@ -1,14 +1,24 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>QuantityMeasurementApp.BusinessLayer</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\QuantityMeasurementApp.ModelLayer\QuantityMeasurementApp.ModelLayer.csproj" />
     <ProjectReference Include="..\QuantityMeasurementApp.RepoLayer\QuantityMeasurementApp.RepoLayer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Password hashing -->
+    <PackageReference Include="BCrypt.Net-Next"                  Version="4.0.3" />
+    <!-- JWT -->
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt"  Version="7.3.1" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens"   Version="7.3.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
   </ItemGroup>
 
 </Project>

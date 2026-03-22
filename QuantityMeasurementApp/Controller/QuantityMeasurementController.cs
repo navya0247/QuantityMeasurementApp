@@ -8,45 +8,16 @@ using System;
 
 namespace QuantityMeasurementApp.Controller
 {
+    /// <summary>Console controller — handles user input and displays results.</summary>
     public class QuantityMeasurementController
     {
-        private readonly IQuantityMeasurementService service;
+        private readonly IQuantityMeasurementService _service;
 
         public QuantityMeasurementController()
         {
-            IQuantityMeasurementRepository repository = SelectRepository();
-            service = new QuantityMeasurementServiceImpl(repository);
-        }
-
-        private IQuantityMeasurementRepository SelectRepository()
-        {
-            Console.WriteLine("\n===== SELECT REPOSITORY TYPE =====");
-            Console.WriteLine("1. Cache Repository (In-Memory + JSON)");
-            Console.WriteLine("2. Database Repository (SQL Server)");
-            Console.WriteLine("===================================");
-
-            while (true)
-            {
-                Console.Write("Select option: ");
-                string input = Console.ReadLine()?.Trim() ?? "";
-
-                if (input == "1")
-                {
-                    Console.WriteLine("\nUsing Cache Repository");
-                    Console.WriteLine("Data saved to: quantity_measurements.json");
-                    return QuantityMeasurementCacheRepository.GetInstance();
-                }
-                else if (input == "2")
-                {
-                    Console.WriteLine("\nUsing Database Repository (SQL Server)");
-                    Console.WriteLine("Data saved to: QuantityMeasurementDB");
-                    return new QuantityMeasurementDatabaseRepository();
-                }
-                else
-                {
-                    Console.WriteLine("Invalid choice. Please enter 1 or 2.");
-                }
-            }
+            // Uses EF Core repository with in-memory SQLite for console app
+            IQuantityMeasurementRepository repository = new InMemoryQuantityRepository();
+            _service = new QuantityMeasurementServiceImpl(repository);
         }
 
         public void ShowMainMenu()
@@ -70,15 +41,13 @@ namespace QuantityMeasurementApp.Controller
                     case 4: ShowTemperatureOperations(); break;
                     case 5: ShowHistoryMenu();           break;
                     case 6: isRunning = false;           break;
-                    default:
-                        Console.WriteLine("Invalid choice.");
-                        break;
+                    default: Console.WriteLine("Invalid choice."); break;
                 }
             }
             Console.WriteLine("\nGoodbye!");
         }
 
-        // ── History & Statistics ──────────────────────────────────────────
+        // ── History ───────────────────────────────────────────────────────
 
         private void ShowHistoryMenu()
         {
@@ -96,57 +65,51 @@ namespace QuantityMeasurementApp.Controller
                 case 3: ViewByMeasurementType(); break;
                 case 4: ViewStatistics();        break;
                 case 5: ClearAllRecords();       break;
-                default:
-                    Console.WriteLine("Invalid choice.");
-                    break;
+                default: Console.WriteLine("Invalid choice."); break;
             }
         }
 
         private void ViewAllHistory()
         {
-            var records = service.GetAllMeasurements();
+            var records = _service.GetAllMeasurements();
             Console.WriteLine($"\n--- All History ({records.Count} records) ---");
             foreach (var r in records)
-                Console.WriteLine(
-                    $"[{r.MeasureType}] {r.Operation}: {r.OperandOne} | {r.OperandTwo} => {r.Result}");
+                Console.WriteLine($"[{r.MeasureType}] {r.Operation}: {r.OperandOne} | {r.OperandTwo} => {r.Result}");
         }
 
         private void ViewByOperation()
         {
             Console.Write("Enter operation (COMPARE/ADD/SUBTRACT/DIVIDE/CONVERT): ");
-            string op = Console.ReadLine()?.Trim().ToUpper() ?? "";
-            var records = service.GetByOperation(op);
+            string op      = Console.ReadLine()?.Trim().ToUpper() ?? "";
+            var records    = _service.GetByOperation(op);
             Console.WriteLine($"\n--- {op} ({records.Count} records) ---");
             foreach (var r in records)
-                Console.WriteLine(
-                    $"[{r.MeasureType}] {r.OperandOne} | {r.OperandTwo} => {r.Result}");
+                Console.WriteLine($"[{r.MeasureType}] {r.OperandOne} | {r.OperandTwo} => {r.Result}");
         }
 
         private void ViewByMeasurementType()
         {
             Console.Write("Enter type (LENGTH/WEIGHT/VOLUME/TEMPERATURE): ");
-            string mt = Console.ReadLine()?.Trim().ToUpper() ?? "";
-            var records = service.GetByMeasureType(mt);
+            string mt   = Console.ReadLine()?.Trim().ToUpper() ?? "";
+            var records = _service.GetByMeasureType(mt);
             Console.WriteLine($"\n--- {mt} ({records.Count} records) ---");
             foreach (var r in records)
-                Console.WriteLine(
-                    $"[{r.Operation}] {r.OperandOne} | {r.OperandTwo} => {r.Result}");
+                Console.WriteLine($"[{r.Operation}] {r.OperandOne} | {r.OperandTwo} => {r.Result}");
         }
 
         private void ViewStatistics()
         {
             Console.WriteLine("\n--- Statistics ---");
-            Console.WriteLine($"Total records : {service.GetTotalCount()}");
-            Console.WriteLine($"Pool info     : {service.GetPoolStats()}");
+            Console.WriteLine($"Total records: {_service.GetTotalCount()}");
         }
 
         private void ClearAllRecords()
         {
-            Console.Write("Are you sure you want to clear all records? (yes/no): ");
+            Console.Write("Are you sure? (yes/no): ");
             if (Console.ReadLine()?.Trim().ToLower() == "yes")
             {
-                service.DeleteAll();
-                Console.WriteLine("All records cleared successfully.");
+                _service.DeleteAll();
+                Console.WriteLine("All records cleared.");
             }
         }
 
@@ -155,12 +118,8 @@ namespace QuantityMeasurementApp.Controller
         private void ShowLengthOperations()
         {
             Console.WriteLine("\n===== Length Operations =====");
-            Console.WriteLine("1. Compare Length");
-            Console.WriteLine("2. Convert Length");
-            Console.WriteLine("3. Add Length");
-            Console.WriteLine("4. Subtract Length");
-            Console.WriteLine("5. Divide Length");
-            int option = ReadInteger("Select operation: ");
+            Console.WriteLine("1. Compare  2. Convert  3. Add  4. Subtract  5. Divide");
+            int option = ReadInteger("Select: ");
             switch (option)
             {
                 case 1: CompareLength();  break;
@@ -168,67 +127,50 @@ namespace QuantityMeasurementApp.Controller
                 case 3: AddLength();      break;
                 case 4: SubtractLength(); break;
                 case 5: DivideLength();   break;
-                default:
-                    Console.WriteLine("Invalid choice.");
-                    break;
+                default: Console.WriteLine("Invalid."); break;
             }
         }
 
         private void CompareLength()
         {
-            double v1     = ReadDouble("Enter first length value: ");
-            LengthEnum u1 = ReadLengthUnit();
-            double v2     = ReadDouble("Enter second length value: ");
-            LengthEnum u2 = ReadLengthUnit();
-            bool result   = service.Compare(
-                new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
-            Console.WriteLine("Length Equal: " + result);
+            double v1 = ReadDouble("First length: ");   LengthEnum u1 = ReadLengthUnit();
+            double v2 = ReadDouble("Second length: ");  LengthEnum u2 = ReadLengthUnit();
+            var dto   = _service.Compare(new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
+            Console.WriteLine("Equal: " + dto.Result);
         }
 
         private void ConvertLength()
         {
-            double v        = ReadDouble("Enter length value: ");
-            Console.WriteLine("From unit:");
-            LengthEnum from = ReadLengthUnit();
-            Console.WriteLine("To unit:");
-            LengthEnum to   = ReadLengthUnit();
-            var result      = service.Convert(new QuantityDTO(v, from), to);
-            Console.WriteLine($"Converted Length: {result.Value} {result.Unit}");
+            double v = ReadDouble("Length value: ");
+            Console.WriteLine("From:"); LengthEnum from = ReadLengthUnit();
+            Console.WriteLine("To:");   LengthEnum to   = ReadLengthUnit();
+            var dto  = _service.Convert(new QuantityDTO(v, from), to);
+            Console.WriteLine("Result: " + dto.Result);
         }
 
         private void AddLength()
         {
-            double v1         = ReadDouble("Enter first length: ");
-            LengthEnum u1     = ReadLengthUnit();
-            double v2         = ReadDouble("Enter second length: ");
-            LengthEnum u2     = ReadLengthUnit();
-            Console.WriteLine("Result unit:");
-            LengthEnum target = ReadLengthUnit();
-            var result        = service.Add(
-                new QuantityDTO(v1, u1), new QuantityDTO(v2, u2), target);
-            Console.WriteLine($"Length Result: {result.Value} {result.Unit}");
+            double v1 = ReadDouble("First: ");  LengthEnum u1 = ReadLengthUnit();
+            double v2 = ReadDouble("Second: "); LengthEnum u2 = ReadLengthUnit();
+            Console.WriteLine("Target unit:"); LengthEnum t = ReadLengthUnit();
+            var dto   = _service.Add(new QuantityDTO(v1, u1), new QuantityDTO(v2, u2), t);
+            Console.WriteLine("Result: " + dto.Result);
         }
 
         private void SubtractLength()
         {
-            double v1     = ReadDouble("Enter first length: ");
-            LengthEnum u1 = ReadLengthUnit();
-            double v2     = ReadDouble("Enter second length: ");
-            LengthEnum u2 = ReadLengthUnit();
-            var result    = service.Subtract(
-                new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
-            Console.WriteLine($"Result: {result.Value} {result.Unit}");
+            double v1 = ReadDouble("First: ");  LengthEnum u1 = ReadLengthUnit();
+            double v2 = ReadDouble("Second: "); LengthEnum u2 = ReadLengthUnit();
+            var dto   = _service.Subtract(new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
+            Console.WriteLine("Result: " + dto.Result);
         }
 
         private void DivideLength()
         {
-            double v1     = ReadDouble("Enter first length: ");
-            LengthEnum u1 = ReadLengthUnit();
-            double v2     = ReadDouble("Enter second length: ");
-            LengthEnum u2 = ReadLengthUnit();
-            double result = service.Divide(
-                new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
-            Console.WriteLine($"Division Result: {result}");
+            double v1 = ReadDouble("First: ");  LengthEnum u1 = ReadLengthUnit();
+            double v2 = ReadDouble("Second: "); LengthEnum u2 = ReadLengthUnit();
+            var dto   = _service.Divide(new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
+            Console.WriteLine("Result: " + dto.Result);
         }
 
         // ── Weight ────────────────────────────────────────────────────────
@@ -236,12 +178,8 @@ namespace QuantityMeasurementApp.Controller
         private void ShowWeightOperations()
         {
             Console.WriteLine("\n===== Weight Operations =====");
-            Console.WriteLine("1. Compare Weight");
-            Console.WriteLine("2. Convert Weight");
-            Console.WriteLine("3. Add Weight");
-            Console.WriteLine("4. Subtract Weight");
-            Console.WriteLine("5. Divide Weight");
-            int option = ReadInteger("Select operation: ");
+            Console.WriteLine("1. Compare  2. Convert  3. Add  4. Subtract  5. Divide");
+            int option = ReadInteger("Select: ");
             switch (option)
             {
                 case 1: CompareWeight();  break;
@@ -249,67 +187,50 @@ namespace QuantityMeasurementApp.Controller
                 case 3: AddWeight();      break;
                 case 4: SubtractWeight(); break;
                 case 5: DivideWeight();   break;
-                default:
-                    Console.WriteLine("Invalid choice.");
-                    break;
+                default: Console.WriteLine("Invalid."); break;
             }
         }
 
         private void CompareWeight()
         {
-            double v1     = ReadDouble("Enter first weight: ");
-            WeightEnum u1 = ReadWeightUnit();
-            double v2     = ReadDouble("Enter second weight: ");
-            WeightEnum u2 = ReadWeightUnit();
-            bool result   = service.Compare(
-                new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
-            Console.WriteLine("Weight Equal: " + result);
+            double v1 = ReadDouble("First: ");  WeightEnum u1 = ReadWeightUnit();
+            double v2 = ReadDouble("Second: "); WeightEnum u2 = ReadWeightUnit();
+            var dto   = _service.Compare(new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
+            Console.WriteLine("Equal: " + dto.Result);
         }
 
         private void ConvertWeight()
         {
-            double v        = ReadDouble("Enter weight value: ");
-            Console.WriteLine("From unit:");
-            WeightEnum from = ReadWeightUnit();
-            Console.WriteLine("To unit:");
-            WeightEnum to   = ReadWeightUnit();
-            var result      = service.Convert(new QuantityDTO(v, from), to);
-            Console.WriteLine($"Converted Weight: {result.Value} {result.Unit}");
+            double v = ReadDouble("Weight value: ");
+            Console.WriteLine("From:"); WeightEnum from = ReadWeightUnit();
+            Console.WriteLine("To:");   WeightEnum to   = ReadWeightUnit();
+            var dto  = _service.Convert(new QuantityDTO(v, from), to);
+            Console.WriteLine("Result: " + dto.Result);
         }
 
         private void AddWeight()
         {
-            double v1          = ReadDouble("Enter first weight: ");
-            WeightEnum u1      = ReadWeightUnit();
-            double v2          = ReadDouble("Enter second weight: ");
-            WeightEnum u2      = ReadWeightUnit();
-            Console.WriteLine("Result unit:");
-            WeightEnum target  = ReadWeightUnit();
-            var result         = service.Add(
-                new QuantityDTO(v1, u1), new QuantityDTO(v2, u2), target);
-            Console.WriteLine($"Weight Result: {result.Value} {result.Unit}");
+            double v1 = ReadDouble("First: ");  WeightEnum u1 = ReadWeightUnit();
+            double v2 = ReadDouble("Second: "); WeightEnum u2 = ReadWeightUnit();
+            Console.WriteLine("Target:"); WeightEnum t = ReadWeightUnit();
+            var dto   = _service.Add(new QuantityDTO(v1, u1), new QuantityDTO(v2, u2), t);
+            Console.WriteLine("Result: " + dto.Result);
         }
 
         private void SubtractWeight()
         {
-            double v1     = ReadDouble("Enter first weight: ");
-            WeightEnum u1 = ReadWeightUnit();
-            double v2     = ReadDouble("Enter second weight: ");
-            WeightEnum u2 = ReadWeightUnit();
-            var result    = service.Subtract(
-                new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
-            Console.WriteLine($"Result: {result.Value} {result.Unit}");
+            double v1 = ReadDouble("First: ");  WeightEnum u1 = ReadWeightUnit();
+            double v2 = ReadDouble("Second: "); WeightEnum u2 = ReadWeightUnit();
+            var dto   = _service.Subtract(new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
+            Console.WriteLine("Result: " + dto.Result);
         }
 
         private void DivideWeight()
         {
-            double v1     = ReadDouble("Enter first weight: ");
-            WeightEnum u1 = ReadWeightUnit();
-            double v2     = ReadDouble("Enter second weight: ");
-            WeightEnum u2 = ReadWeightUnit();
-            double result = service.Divide(
-                new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
-            Console.WriteLine($"Division Result: {result}");
+            double v1 = ReadDouble("First: ");  WeightEnum u1 = ReadWeightUnit();
+            double v2 = ReadDouble("Second: "); WeightEnum u2 = ReadWeightUnit();
+            var dto   = _service.Divide(new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
+            Console.WriteLine("Result: " + dto.Result);
         }
 
         // ── Volume ────────────────────────────────────────────────────────
@@ -317,12 +238,8 @@ namespace QuantityMeasurementApp.Controller
         private void ShowVolumeOperations()
         {
             Console.WriteLine("\n===== Volume Operations =====");
-            Console.WriteLine("1. Compare Volume");
-            Console.WriteLine("2. Convert Volume");
-            Console.WriteLine("3. Add Volume");
-            Console.WriteLine("4. Subtract Volume");
-            Console.WriteLine("5. Divide Volume");
-            int option = ReadInteger("Select operation: ");
+            Console.WriteLine("1. Compare  2. Convert  3. Add  4. Subtract  5. Divide");
+            int option = ReadInteger("Select: ");
             switch (option)
             {
                 case 1: CompareVolume();  break;
@@ -330,67 +247,50 @@ namespace QuantityMeasurementApp.Controller
                 case 3: AddVolume();      break;
                 case 4: SubtractVolume(); break;
                 case 5: DivideVolume();   break;
-                default:
-                    Console.WriteLine("Invalid choice.");
-                    break;
+                default: Console.WriteLine("Invalid."); break;
             }
         }
 
         private void CompareVolume()
         {
-            double v1     = ReadDouble("Enter first volume: ");
-            VolumeEnum u1 = ReadVolumeUnit();
-            double v2     = ReadDouble("Enter second volume: ");
-            VolumeEnum u2 = ReadVolumeUnit();
-            bool result   = service.Compare(
-                new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
-            Console.WriteLine("Volume Equal: " + result);
+            double v1 = ReadDouble("First: ");  VolumeEnum u1 = ReadVolumeUnit();
+            double v2 = ReadDouble("Second: "); VolumeEnum u2 = ReadVolumeUnit();
+            var dto   = _service.Compare(new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
+            Console.WriteLine("Equal: " + dto.Result);
         }
 
         private void ConvertVolume()
         {
-            double v        = ReadDouble("Enter volume value: ");
-            Console.WriteLine("From unit:");
-            VolumeEnum from = ReadVolumeUnit();
-            Console.WriteLine("To unit:");
-            VolumeEnum to   = ReadVolumeUnit();
-            var result      = service.Convert(new QuantityDTO(v, from), to);
-            Console.WriteLine($"Converted Volume: {result.Value} {result.Unit}");
+            double v = ReadDouble("Volume value: ");
+            Console.WriteLine("From:"); VolumeEnum from = ReadVolumeUnit();
+            Console.WriteLine("To:");   VolumeEnum to   = ReadVolumeUnit();
+            var dto  = _service.Convert(new QuantityDTO(v, from), to);
+            Console.WriteLine("Result: " + dto.Result);
         }
 
         private void AddVolume()
         {
-            double v1          = ReadDouble("Enter first volume: ");
-            VolumeEnum u1      = ReadVolumeUnit();
-            double v2          = ReadDouble("Enter second volume: ");
-            VolumeEnum u2      = ReadVolumeUnit();
-            Console.WriteLine("Result unit:");
-            VolumeEnum target  = ReadVolumeUnit();
-            var result         = service.Add(
-                new QuantityDTO(v1, u1), new QuantityDTO(v2, u2), target);
-            Console.WriteLine($"Volume Result: {result.Value} {result.Unit}");
+            double v1 = ReadDouble("First: ");  VolumeEnum u1 = ReadVolumeUnit();
+            double v2 = ReadDouble("Second: "); VolumeEnum u2 = ReadVolumeUnit();
+            Console.WriteLine("Target:"); VolumeEnum t = ReadVolumeUnit();
+            var dto   = _service.Add(new QuantityDTO(v1, u1), new QuantityDTO(v2, u2), t);
+            Console.WriteLine("Result: " + dto.Result);
         }
 
         private void SubtractVolume()
         {
-            double v1     = ReadDouble("Enter first volume: ");
-            VolumeEnum u1 = ReadVolumeUnit();
-            double v2     = ReadDouble("Enter second volume: ");
-            VolumeEnum u2 = ReadVolumeUnit();
-            var result    = service.Subtract(
-                new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
-            Console.WriteLine($"Result: {result.Value} {result.Unit}");
+            double v1 = ReadDouble("First: ");  VolumeEnum u1 = ReadVolumeUnit();
+            double v2 = ReadDouble("Second: "); VolumeEnum u2 = ReadVolumeUnit();
+            var dto   = _service.Subtract(new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
+            Console.WriteLine("Result: " + dto.Result);
         }
 
         private void DivideVolume()
         {
-            double v1     = ReadDouble("Enter first volume: ");
-            VolumeEnum u1 = ReadVolumeUnit();
-            double v2     = ReadDouble("Enter second volume: ");
-            VolumeEnum u2 = ReadVolumeUnit();
-            double result = service.Divide(
-                new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
-            Console.WriteLine($"Division Result: {result}");
+            double v1 = ReadDouble("First: ");  VolumeEnum u1 = ReadVolumeUnit();
+            double v2 = ReadDouble("Second: "); VolumeEnum u2 = ReadVolumeUnit();
+            var dto   = _service.Divide(new QuantityDTO(v1, u1), new QuantityDTO(v2, u2));
+            Console.WriteLine("Result: " + dto.Result);
         }
 
         // ── Temperature ───────────────────────────────────────────────────
@@ -398,76 +298,70 @@ namespace QuantityMeasurementApp.Controller
         private void ShowTemperatureOperations()
         {
             Console.WriteLine("\n===== Temperature Operations =====");
-            Console.WriteLine("1. Compare Temperature");
-            Console.WriteLine("2. Convert Temperature");
-            int option = ReadInteger("Select operation: ");
+            Console.WriteLine("1. Compare  2. Convert");
+            int option = ReadInteger("Select: ");
             switch (option)
             {
                 case 1: CompareTemperature(); break;
                 case 2: ConvertTemperature(); break;
-                default:
-                    Console.WriteLine("Invalid choice.");
-                    break;
+                default: Console.WriteLine("Invalid."); break;
             }
         }
 
         private void CompareTemperature()
         {
-            double v1  = ReadDouble("Enter first temperature value: ");
-            double v2  = ReadDouble("Enter second temperature value: ");
+            double v1  = ReadDouble("First temperature: ");
+            double v2  = ReadDouble("Second temperature: ");
             var first  = new Quantity<TemperatureEnum>(v1, TemperatureEnum.CELSIUS);
             var second = new Quantity<TemperatureEnum>(v2, TemperatureEnum.FAHRENHEIT);
-            Console.WriteLine("Temperature Equal: " + first.Equals(second));
+            Console.WriteLine("Equal: " + first.Equals(second));
         }
 
         private void ConvertTemperature()
         {
-            double v             = ReadDouble("Enter temperature value: ");
-            Console.WriteLine("From unit:");
-            TemperatureEnum from = ReadTemperatureUnit();
-            Console.WriteLine("To unit:");
-            TemperatureEnum to   = ReadTemperatureUnit();
-            var result           = service.Convert(new QuantityDTO(v, from), to);
-            Console.WriteLine($"Converted Temperature: {result.Value} {result.Unit}");
+            double v = ReadDouble("Temperature value: ");
+            Console.WriteLine("From:"); TemperatureEnum from = ReadTemperatureUnit();
+            Console.WriteLine("To:");   TemperatureEnum to   = ReadTemperatureUnit();
+            var dto  = _service.Convert(new QuantityDTO(v, from), to);
+            Console.WriteLine("Result: " + dto.Result);
         }
 
         // ── Helpers ───────────────────────────────────────────────────────
 
-        private double ReadDouble(string message)
+        private double ReadDouble(string msg)
         {
-            Console.Write(message);
+            Console.Write(msg);
             return double.Parse(Console.ReadLine() ?? "0");
         }
 
-        private int ReadInteger(string message)
+        private int ReadInteger(string msg)
         {
-            Console.Write(message);
+            Console.Write(msg);
             return int.Parse(Console.ReadLine() ?? "0");
         }
 
         private LengthEnum ReadLengthUnit()
         {
-            Console.WriteLine("1. FEET  2. INCHES  3. YARDS  4. CENTIMETERS");
-            return (LengthEnum)(ReadInteger("Choose unit: ") - 1);
+            Console.WriteLine("1.FEET 2.INCHES 3.YARDS 4.CENTIMETERS");
+            return (LengthEnum)(ReadInteger("Unit: ") - 1);
         }
 
         private WeightEnum ReadWeightUnit()
         {
-            Console.WriteLine("1. KILOGRAM  2. GRAM  3. POUND");
-            return (WeightEnum)(ReadInteger("Choose unit: ") - 1);
+            Console.WriteLine("1.KILOGRAM 2.GRAM 3.POUND");
+            return (WeightEnum)(ReadInteger("Unit: ") - 1);
         }
 
         private VolumeEnum ReadVolumeUnit()
         {
-            Console.WriteLine("1. LITRE  2. MILLILITRE  3. GALLON");
-            return (VolumeEnum)(ReadInteger("Choose unit: ") - 1);
+            Console.WriteLine("1.LITRE 2.MILLILITRE 3.GALLON");
+            return (VolumeEnum)(ReadInteger("Unit: ") - 1);
         }
 
         private TemperatureEnum ReadTemperatureUnit()
         {
-            Console.WriteLine("1. CELSIUS  2. FAHRENHEIT  3. KELVIN");
-            return (TemperatureEnum)(ReadInteger("Choose unit: ") - 1);
+            Console.WriteLine("1.CELSIUS 2.FAHRENHEIT 3.KELVIN");
+            return (TemperatureEnum)(ReadInteger("Unit: ") - 1);
         }
     }
 }
-

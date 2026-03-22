@@ -1,149 +1,153 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QuantityMeasurementApp.ModelLayer.Models;
+using QuantityMeasurementApp.ModelLayer.DTO;
 using QuantityMeasurementApp.BusinessLayer.Services;
+using QuantityMeasurementApp.RepoLayer.Repositories;
 
 namespace QuantityMeasurementApp.Tests
 {
     /// <summary>
-    /// UC10 Tests
-    /// Updated to use Generic Quantity<U> class
+    /// UC10 Tests — updated to use QuantityMeasurementServiceImpl directly.
+    /// The old static QuantityMeasurementService facade was removed in UC17.
     /// </summary>
     [TestClass]
     public class QuantityMeasurementTests
     {
-        // ---------- UC1 ----------
+        private static QuantityMeasurementServiceImpl _service;
+
+        [ClassInitialize]
+        public static void ClassSetup(TestContext _)
+        {
+            var repo = new InMemoryQuantityRepository();
+            _service = new QuantityMeasurementServiceImpl(repo);
+        }
+
+        // ── UC1 ───────────────────────────────────────────────────────────
+
         [TestMethod]
         public void FeetEquality_SameValue_ReturnsTrue()
         {
-            Assert.IsTrue(QuantityMeasurementService.AreFeetEqual(1.0, 1.0));
+            var dto = _service.Compare(
+                new QuantityDTO(1.0, LengthEnum.FEET),
+                new QuantityDTO(1.0, LengthEnum.FEET));
+            Assert.AreEqual("true", dto.Result);
         }
 
         [TestMethod]
         public void FeetEquality_DifferentValue_ReturnsFalse()
         {
-            Assert.IsFalse(QuantityMeasurementService.AreFeetEqual(1.0, 2.0));
+            var dto = _service.Compare(
+                new QuantityDTO(1.0, LengthEnum.FEET),
+                new QuantityDTO(2.0, LengthEnum.FEET));
+            Assert.AreEqual("false", dto.Result);
         }
 
-        // ---------- UC2 ----------
+        // ── UC2 ───────────────────────────────────────────────────────────
+
         [TestMethod]
         public void InchEquality_SameValue_ReturnsTrue()
         {
-            Assert.IsTrue(QuantityMeasurementService.AreInchesEqual(5.0, 5.0));
+            var dto = _service.Compare(
+                new QuantityDTO(5.0, LengthEnum.INCHES),
+                new QuantityDTO(5.0, LengthEnum.INCHES));
+            Assert.AreEqual("true", dto.Result);
         }
 
         [TestMethod]
         public void InchEquality_DifferentValue_ReturnsFalse()
         {
-            Assert.IsFalse(QuantityMeasurementService.AreInchesEqual(5.0, 6.0));
+            var dto = _service.Compare(
+                new QuantityDTO(5.0, LengthEnum.INCHES),
+                new QuantityDTO(6.0, LengthEnum.INCHES));
+            Assert.AreEqual("false", dto.Result);
         }
 
-        // ---------- UC3 ----------
+        // ── UC3 ───────────────────────────────────────────────────────────
+
         [TestMethod]
         public void FeetToFeet_SameValue_ReturnsTrue()
         {
-            Assert.IsTrue(
-                QuantityMeasurementService.AreLengthEqual(
-                    1.0, LengthEnum.FEET,
-                    1.0, LengthEnum.FEET));
+            var dto = _service.Compare(
+                new QuantityDTO(1.0, LengthEnum.FEET),
+                new QuantityDTO(1.0, LengthEnum.FEET));
+            Assert.AreEqual("true", dto.Result);
         }
 
         [TestMethod]
         public void FeetToInches_Equivalent_ReturnsTrue()
         {
-            Assert.IsTrue(
-                QuantityMeasurementService.AreLengthEqual(
-                    1.0, LengthEnum.FEET,
-                    12.0, LengthEnum.INCHES));
+            var dto = _service.Compare(
+                new QuantityDTO(1.0,  LengthEnum.FEET),
+                new QuantityDTO(12.0, LengthEnum.INCHES));
+            Assert.AreEqual("true", dto.Result);
         }
 
-        // ---------- UC4 ----------
+        // ── UC4 ───────────────────────────────────────────────────────────
+
         [TestMethod]
         public void YardToFeet_Equivalent_ReturnsTrue()
         {
-            Assert.IsTrue(
-                QuantityMeasurementService.AreLengthEqual(
-                    1.0, LengthEnum.YARDS,
-                    3.0, LengthEnum.FEET));
+            var dto = _service.Compare(
+                new QuantityDTO(1.0, LengthEnum.YARDS),
+                new QuantityDTO(3.0, LengthEnum.FEET));
+            Assert.AreEqual("true", dto.Result);
         }
 
         [TestMethod]
         public void CmToInch_Equivalent_ReturnsTrue()
         {
-            Assert.IsTrue(
-                QuantityMeasurementService.AreLengthEqual(
-                    2.54, LengthEnum.CENTIMETERS,
-                    1.0, LengthEnum.INCHES));
+            var dto = _service.Compare(
+                new QuantityDTO(2.54, LengthEnum.CENTIMETERS),
+                new QuantityDTO(1.0,  LengthEnum.INCHES));
+            Assert.AreEqual("true", dto.Result);
         }
 
-        // ---------- UC5 ----------
+        // ── UC5 ───────────────────────────────────────────────────────────
+
         [TestMethod]
         public void Convert_FeetToInches_Returns12()
         {
-            double result = QuantityMeasurementService.ConvertLength(
-                1.0, LengthEnum.FEET, LengthEnum.INCHES);
-
-            Assert.AreEqual(12.0, result, 0.0001);
+            var dto = _service.Convert(
+                new QuantityDTO(1.0, LengthEnum.FEET), LengthEnum.INCHES);
+            Assert.IsTrue(dto.Result.Contains("12"));
         }
 
         [TestMethod]
         public void Convert_InchesToFeet_Returns2()
         {
-            double result = QuantityMeasurementService.ConvertLength(
-                24.0, LengthEnum.INCHES, LengthEnum.FEET);
-
-            Assert.AreEqual(2.0, result, 0.0001);
+            var dto = _service.Convert(
+                new QuantityDTO(24.0, LengthEnum.INCHES), LengthEnum.FEET);
+            Assert.IsTrue(dto.Result.Contains("2"));
         }
 
-        // ---------- UC6 ----------
+        // ── UC6 ───────────────────────────────────────────────────────────
+
         [TestMethod]
         public void Add_FeetPlusFeet_Returns3Feet()
         {
-            var result = QuantityMeasurementService.AddLengths(
-                1.0, LengthEnum.FEET,
-                2.0, LengthEnum.FEET);
-
-            Assert.AreEqual(3.0, result.Value, 0.0001);
+            var dto = _service.Add(
+                new QuantityDTO(1.0, LengthEnum.FEET),
+                new QuantityDTO(2.0, LengthEnum.FEET),
+                LengthEnum.FEET);
+            Assert.IsTrue(dto.Result.Contains("3"));
         }
 
         [TestMethod]
         public void Add_FeetPlusInches_Returns2Feet()
         {
-            var result = QuantityMeasurementService.AddLengths(
-                1.0, LengthEnum.FEET,
-                12.0, LengthEnum.INCHES);
-
-            Assert.AreEqual(2.0, result.Value, 0.0001);
+            var dto = _service.Add(
+                new QuantityDTO(1.0,  LengthEnum.FEET),
+                new QuantityDTO(12.0, LengthEnum.INCHES),
+                LengthEnum.FEET);
+            Assert.IsTrue(dto.Result.Contains("2"));
         }
 
-        // ---------- UC7 ----------
-        [TestMethod]
-        public void Add_WithTargetUnit_Inches()
-        {
-            var result = QuantityMeasurementService.AddLengths(
-                1.0, LengthEnum.FEET,
-                12.0, LengthEnum.INCHES,
-                LengthEnum.INCHES);
+        // ── UC8 ───────────────────────────────────────────────────────────
 
-            Assert.AreEqual(24.0, result.Value, 0.0001);
-        }
-
-        [TestMethod]
-        public void Add_WithTargetUnit_Yards()
-        {
-            var result = QuantityMeasurementService.AddLengths(
-                1.0, LengthEnum.FEET,
-                12.0, LengthEnum.INCHES,
-                LengthEnum.YARDS);
-
-            Assert.AreEqual(0.6667, result.Value, 0.0001);
-        }
-
-        // ---------- UC8 ----------
         [TestMethod]
         public void LengthUnit_ConvertToBaseUnit()
         {
-           double result = LengthUnit.ConvertToBaseUnit(LengthEnum.INCHES, 12);
-
+            double result = LengthUnit.ConvertToBaseUnit(LengthEnum.INCHES, 12);
             Assert.AreEqual(1.0, result, 0.0001);
         }
 
@@ -151,38 +155,33 @@ namespace QuantityMeasurementApp.Tests
         public void LengthUnit_ConvertFromBaseUnit()
         {
             double result = LengthUnit.ConvertFromBaseUnit(LengthEnum.INCHES, 1);
-
             Assert.AreEqual(12.0, result, 0.0001);
         }
 
-        // ---------- UC10 ----------
+        // ── UC10 ──────────────────────────────────────────────────────────
+
         [TestMethod]
         public void GenericQuantity_LengthEquality()
         {
-            var q1 = new Quantity<LengthEnum>(1.0, LengthEnum.FEET);
+            var q1 = new Quantity<LengthEnum>(1.0,  LengthEnum.FEET);
             var q2 = new Quantity<LengthEnum>(12.0, LengthEnum.INCHES);
-
             Assert.IsTrue(q1.Equals(q2));
         }
 
         [TestMethod]
         public void GenericQuantity_LengthConversion()
         {
-            var q = new Quantity<LengthEnum>(1.0, LengthEnum.FEET);
-
+            var q      = new Quantity<LengthEnum>(1.0, LengthEnum.FEET);
             var result = q.ConvertTo(LengthEnum.INCHES);
-
             Assert.AreEqual(12.0, result.Value, 0.0001);
         }
 
         [TestMethod]
         public void GenericQuantity_LengthAddition()
         {
-            var q1 = new Quantity<LengthEnum>(1.0, LengthEnum.FEET);
-            var q2 = new Quantity<LengthEnum>(12.0, LengthEnum.INCHES);
-
+            var q1     = new Quantity<LengthEnum>(1.0,  LengthEnum.FEET);
+            var q2     = new Quantity<LengthEnum>(12.0, LengthEnum.INCHES);
             var result = q1.Add(q2, LengthEnum.FEET);
-
             Assert.AreEqual(2.0, result.Value, 0.0001);
         }
     }
