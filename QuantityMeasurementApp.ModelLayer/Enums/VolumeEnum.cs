@@ -5,7 +5,7 @@ using System;
 /// Base unit used for conversion is LITRE.
 /// </summary>
 
-namespace QuantityMeasurementApp.ModelLayer.Models
+namespace QuantityMeasurementApp.ModelLayer.Enums
 {
     public enum VolumeEnum
     {

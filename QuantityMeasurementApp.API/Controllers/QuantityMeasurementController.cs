@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using QuantityMeasurementApp.BusinessLayer.Interfaces;
 using QuantityMeasurementApp.ModelLayer.DTO;
-using QuantityMeasurementApp.ModelLayer.Models;
+using QuantityMeasurementApp.ModelLayer.Enums;
 
 namespace QuantityMeasurementApp.API.Controllers
 {

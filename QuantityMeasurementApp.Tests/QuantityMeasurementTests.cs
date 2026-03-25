@@ -1,5 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantityMeasurementApp.ModelLayer.Models;
+using QuantityMeasurementApp.ModelLayer.Enums;
 using QuantityMeasurementApp.ModelLayer.DTO;
 using QuantityMeasurementApp.BusinessLayer.Services;
 using QuantityMeasurementApp.RepoLayer.Repositories;
@@ -19,7 +19,8 @@ namespace QuantityMeasurementApp.Tests
         public static void ClassSetup(TestContext _)
         {
             var repo = new InMemoryQuantityRepository();
-            _service = new QuantityMeasurementServiceImpl(repo);
+            var logger = Microsoft.Extensions.Logging.Abstractions.NullLogger<QuantityMeasurementApp.BusinessLayer.Services.QuantityMeasurementServiceImpl>.Instance;
+            _service = new QuantityMeasurementServiceImpl(repo, logger);
         }
 
         // ── UC1 ───────────────────────────────────────────────────────────
@@ -77,7 +78,7 @@ namespace QuantityMeasurementApp.Tests
         public void FeetToInches_Equivalent_ReturnsTrue()
         {
             var dto = _service.Compare(
-                new QuantityDTO(1.0,  LengthEnum.FEET),
+                new QuantityDTO(1.0, LengthEnum.FEET),
                 new QuantityDTO(12.0, LengthEnum.INCHES));
             Assert.AreEqual("true", dto.Result);
         }
@@ -98,7 +99,7 @@ namespace QuantityMeasurementApp.Tests
         {
             var dto = _service.Compare(
                 new QuantityDTO(2.54, LengthEnum.CENTIMETERS),
-                new QuantityDTO(1.0,  LengthEnum.INCHES));
+                new QuantityDTO(1.0, LengthEnum.INCHES));
             Assert.AreEqual("true", dto.Result);
         }
 
@@ -136,7 +137,7 @@ namespace QuantityMeasurementApp.Tests
         public void Add_FeetPlusInches_Returns2Feet()
         {
             var dto = _service.Add(
-                new QuantityDTO(1.0,  LengthEnum.FEET),
+                new QuantityDTO(1.0, LengthEnum.FEET),
                 new QuantityDTO(12.0, LengthEnum.INCHES),
                 LengthEnum.FEET);
             Assert.IsTrue(dto.Result.Contains("2"));
@@ -163,7 +164,7 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void GenericQuantity_LengthEquality()
         {
-            var q1 = new Quantity<LengthEnum>(1.0,  LengthEnum.FEET);
+            var q1 = new Quantity<LengthEnum>(1.0, LengthEnum.FEET);
             var q2 = new Quantity<LengthEnum>(12.0, LengthEnum.INCHES);
             Assert.IsTrue(q1.Equals(q2));
         }
@@ -171,7 +172,7 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void GenericQuantity_LengthConversion()
         {
-            var q      = new Quantity<LengthEnum>(1.0, LengthEnum.FEET);
+            var q = new Quantity<LengthEnum>(1.0, LengthEnum.FEET);
             var result = q.ConvertTo(LengthEnum.INCHES);
             Assert.AreEqual(12.0, result.Value, 0.0001);
         }
@@ -179,8 +180,8 @@ namespace QuantityMeasurementApp.Tests
         [TestMethod]
         public void GenericQuantity_LengthAddition()
         {
-            var q1     = new Quantity<LengthEnum>(1.0,  LengthEnum.FEET);
-            var q2     = new Quantity<LengthEnum>(12.0, LengthEnum.INCHES);
+            var q1 = new Quantity<LengthEnum>(1.0, LengthEnum.FEET);
+            var q2 = new Quantity<LengthEnum>(12.0, LengthEnum.INCHES);
             var result = q1.Add(q2, LengthEnum.FEET);
             Assert.AreEqual(2.0, result.Value, 0.0001);
         }

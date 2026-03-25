@@ -5,7 +5,7 @@ using System;
 /// Used by the service layer for calculations.
 /// </summary>
 
-namespace QuantityMeasurementApp.ModelLayer.Models
+namespace QuantityMeasurementApp.ModelLayer.Units
 {
     // Class representing Inches measurement
     public class Inches

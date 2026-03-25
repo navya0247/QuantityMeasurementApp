@@ -5,7 +5,7 @@ using System;
 /// Used by the business layer for conversion operations.
 /// </summary>
 
-namespace QuantityMeasurementApp.ModelLayer.Models
+namespace QuantityMeasurementApp.ModelLayer.Enums
 {
     public enum LengthEnum
     {

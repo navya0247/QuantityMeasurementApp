@@ -6,7 +6,7 @@ using QuantityMeasurementApp.RepoLayer.Interfaces;
 
 namespace QuantityMeasurementApp.RepoLayer.Repositories
 {
-    /// <summary>EF Core implementation using LINQ to Entities — no raw SQL.</summary>
+    /// <summary>EF Core implementation using LINQ to Entities - no raw SQL.</summary>
     public class QuantityMeasurementRepository : IQuantityMeasurementRepository
     {
         private readonly AppDbContext _context;

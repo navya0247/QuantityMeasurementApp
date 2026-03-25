@@ -26,12 +26,25 @@
     <!-- Swagger -->
     <PackageReference Include="Swashbuckle.AspNetCore"                         Version="6.5.0" />
 
-    <!-- EF Core InMemory for fallback -->
+    <!-- EF Core -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"         Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design"           Version="8.0.0" />
 
     <!-- Redis -->
     <PackageReference Include="StackExchange.Redis"                            Version="2.7.33" />
+
+    <!-- NLog file logging -->
+    <PackageReference Include="NLog"                                           Version="5.3.2" />
+    <PackageReference Include="NLog.Web.AspNetCore"                            Version="5.3.11" />
   </ItemGroup>
+
+
+  <ItemGroup>
+  <None Update="NLog.config">
+    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+  </None>
+</ItemGroup>
+
+  
 
 </Project>

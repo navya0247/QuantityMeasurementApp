@@ -1,5 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using QuantityMeasurementApp.ModelLayer.Models;
+using QuantityMeasurementApp.ModelLayer.Enums;
 using QuantityMeasurementApp.BusinessLayer.Services;
 using System;
 

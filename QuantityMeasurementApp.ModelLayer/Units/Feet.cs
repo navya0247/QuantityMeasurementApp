@@ -1,5 +1,5 @@
 using System;
-namespace QuantityMeasurementApp.ModelLayer.Models
+namespace QuantityMeasurementApp.ModelLayer.Units
 {
 
     /// <summary>

@@ -1,5 +1,5 @@
 using System;
-using QuantityMeasurementApp.ModelLayer.Models;
+using QuantityMeasurementApp.ModelLayer.Enums;
 
 /// <summary>
 /// Service class responsible for weight unit conversions.

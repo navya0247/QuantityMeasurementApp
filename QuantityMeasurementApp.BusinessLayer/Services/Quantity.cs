@@ -6,7 +6,7 @@ using QuantityMeasurementApp.BusinessLayer.Services;
 /// Used by the service layer for calculations.
 /// </summary>
 
-namespace QuantityMeasurementApp.ModelLayer.Models
+namespace QuantityMeasurementApp.ModelLayer.Enums
 {
     /// <summary>
     /// Generic Quantity class supporting multiple measurement categories.
