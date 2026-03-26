@@ -33,7 +33,6 @@ namespace QuantityMeasurementApp.API.Controllers
         ///       "thatQuantity": { "value": 12.0, "unit": "INCHES", "measurementType": "LengthUnit" }
         ///     }
         ///
-        /// Expected result: true (1 FEET == 12 INCHES)
         /// </remarks>
         [HttpPost("compare")]
         [ProducesResponseType(typeof(QuantityMeasurementDTO), 200)]
@@ -56,7 +55,6 @@ namespace QuantityMeasurementApp.API.Controllers
         ///       "thatQuantity": { "value": 0.0, "unit": "INCHES", "measurementType": "LengthUnit" }
         ///     }
         ///
-        /// Expected result: 12 INCHES (1 FEET converted to INCHES)
         /// </remarks>
         [HttpPost("convert")]
         [ProducesResponseType(typeof(QuantityMeasurementDTO), 200)]
@@ -88,7 +86,6 @@ namespace QuantityMeasurementApp.API.Controllers
         ///       "targetUnit":   { "value": 0.0,  "unit": "YARDS",  "measurementType": "LengthUnit" }
         ///     }
         ///
-        /// Expected result without targetUnit: 2 FEET
         /// </remarks>
         [HttpPost("add")]
         [ProducesResponseType(typeof(QuantityMeasurementDTO), 200)]
@@ -123,7 +120,6 @@ namespace QuantityMeasurementApp.API.Controllers
         ///       "targetUnit":   { "value": 0.0,   "unit": "GRAM",     "measurementType": "WeightUnit" }
         ///     }
         ///
-        /// Expected result without targetUnit: 1.5 KILOGRAM
         /// </remarks>
         [HttpPost("subtract")]
         [ProducesResponseType(typeof(QuantityMeasurementDTO), 200)]
@@ -147,7 +143,6 @@ namespace QuantityMeasurementApp.API.Controllers
         ///       "thatQuantity": { "value": 1.0, "unit": "LITRE", "measurementType": "VolumeUnit" }
         ///     }
         ///
-        /// Expected result: 2 (2 LITRE divided by 1 LITRE)
         /// </remarks>
         [HttpPost("divide")]
         [ProducesResponseType(typeof(QuantityMeasurementDTO), 200)]

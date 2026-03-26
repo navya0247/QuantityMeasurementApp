@@ -8,9 +8,7 @@ namespace QuantityMeasurementApp.ModelLayer.Entities
     /// EF Core entity mapped to the users table.
     ///
     /// Columns:
-    ///   password_hash — BCrypt hash of (password + salt)
-    ///   password_salt — the random salt generated at registration
-    ///                   Both are needed together to verify a login attempt.
+    ///   password_hash — BCrypt hash of (password )
     /// </summary>
     [Table("users")]
     public class UserEntity
@@ -25,10 +23,7 @@ namespace QuantityMeasurementApp.ModelLayer.Entities
         [Required][Column("email")][MaxLength(200)]
         public string Email { get; set; }
 
-        /// <summary>
-        /// BCrypt hash of (plainPassword + PasswordSalt).
-        /// Never store or log the plain password.
-        /// </summary>
+       
         [Required][Column("password_hash")]
         public string PasswordHash { get; set; }
 

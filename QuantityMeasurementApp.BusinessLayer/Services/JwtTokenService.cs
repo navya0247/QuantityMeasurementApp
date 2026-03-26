@@ -10,7 +10,7 @@ using QuantityMeasurementApp.ModelLayer.Entities;
 
 namespace QuantityMeasurementApp.BusinessLayer.Services
 {
-    /// <summary>Generates and validates JWT tokens using HMAC-SHA256.</summary>
+    /// <summary>Generates and validates JWT tokens </summary>
     public class JwtTokenService : IJwtTokenService
     {
         private readonly IConfiguration _config;

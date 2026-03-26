@@ -11,7 +11,6 @@ namespace QuantityMeasurementApp.RepoLayer.Repositories
     /// <summary>
     /// Redis cache repository — stores quantity measurements in Redis.
     /// Implements IRedisQuantityRepository which extends IQuantityMeasurementRepository.
-    /// Used as a fast cache layer. Data persists until TTL expires.
     /// </summary>
     public class RedisQuantityRepository : IRedisQuantityRepository
     {
@@ -67,7 +66,7 @@ namespace QuantityMeasurementApp.RepoLayer.Repositories
         /// <summary>Clears all records from Redis cache.</summary>
         public void DeleteAll() => _cache.KeyDelete(AllKey);
 
-        // ── Private helpers ───────────────────────────────────────────────
+        //  Private helpers 
 
         private List<QuantityMeasurementEntity> GetAllFromCache()
         {

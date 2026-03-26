@@ -8,10 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-    <PackageReference Include="MSTest" Version="4.0.1" />
-    <PackageReference Include="MSTest.TestAdapter" Version="4.1.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="4.1.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk"                      Version="18.0.1" />
+    <PackageReference Include="MSTest"                                       Version="4.0.1" />
+    <PackageReference Include="MSTest.TestAdapter"                          Version="4.1.0" />
+    <PackageReference Include="MSTest.TestFramework"                        Version="4.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration"          Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json"     Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +24,7 @@
     <ProjectReference Include="..\QuantityMeasurementApp\QuantityMeasurementApp.csproj" />
     <ProjectReference Include="..\QuantityMeasurementApp.BusinessLayer\QuantityMeasurementApp.BusinessLayer.csproj" />
     <ProjectReference Include="..\QuantityMeasurementApp.ModelLayer\QuantityMeasurementApp.ModelLayer.csproj" />
+    <ProjectReference Include="..\QuantityMeasurementApp.RepoLayer\QuantityMeasurementApp.RepoLayer.csproj" />
   </ItemGroup>
 
 </Project>

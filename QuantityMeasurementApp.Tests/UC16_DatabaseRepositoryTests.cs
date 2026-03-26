@@ -7,11 +7,6 @@ using QuantityMeasurementApp.RepoLayer.Repositories;
 
 namespace QuantityMeasurementApp.Tests
 {
-    /// <summary>
-    /// UC16 - Repository Tests.
-    /// ADO.NET removed — now uses InMemoryQuantityRepository.
-    /// All test logic and assertions remain identical.
-    /// </summary>
     [TestClass]
     [DoNotParallelize]
     public class UC16_DatabaseRepositoryTests
@@ -30,7 +25,7 @@ namespace QuantityMeasurementApp.Tests
         [TestCleanup]
         public void TearDown() => _repository?.DeleteAll();
 
-        // ── Save Tests ────────────────────────────────────────────────────
+        //  Save Tests 
 
         [TestMethod]
         public void Save_SingleEntity_ShouldIncreaseCountToOne()
@@ -61,7 +56,7 @@ namespace QuantityMeasurementApp.Tests
             Assert.AreEqual("LENGTH", result[0].MeasureType);
         }
 
-        // ── GetAll Tests ──────────────────────────────────────────────────
+        //  GetAll Tests 
 
         [TestMethod]
         public void GetAll_WhenEmpty_ShouldReturnEmptyList()
@@ -75,7 +70,7 @@ namespace QuantityMeasurementApp.Tests
             Assert.AreEqual(2, _repository.GetAll().Count);
         }
 
-        // ── GetByOperation Tests ──────────────────────────────────────────
+        //  GetByOperation Tests 
 
         [TestMethod]
         public void GetByOperation_Compare_ShouldReturnOnlyCompareRecords()
@@ -95,7 +90,7 @@ namespace QuantityMeasurementApp.Tests
             Assert.AreEqual(0, _repository.GetByOperation("DIVIDE").Count);
         }
 
-        // ── GetByMeasureType Tests ────────────────────────────────────────
+        //  GetByMeasureType Tests 
 
         [TestMethod]
         public void GetByMeasureType_Length_ShouldReturnOnlyLengthRecords()
@@ -108,7 +103,7 @@ namespace QuantityMeasurementApp.Tests
             Assert.AreEqual("LENGTH", result[0].MeasureType);
         }
 
-        // ── GetTotalCount Tests ───────────────────────────────────────────
+        //  GetTotalCount Tests 
 
         [TestMethod]
         public void GetTotalCount_EmptyRepository_ShouldReturnZero()
@@ -122,7 +117,7 @@ namespace QuantityMeasurementApp.Tests
             Assert.AreEqual(5, _repository.GetTotalCount());
         }
 
-        // ── DeleteAll Tests ───────────────────────────────────────────────
+        //  DeleteAll Tests 
 
         [TestMethod]
         public void DeleteAll_ShouldClearAllRecords()
@@ -132,7 +127,7 @@ namespace QuantityMeasurementApp.Tests
             Assert.AreEqual(0, _repository.GetTotalCount());
         }
 
-        // ── Integration Tests ─────────────────────────────────────────────
+        //  Integration Tests 
 
         [TestMethod]
         public void Integration_CompareLength_ShouldSaveToRepository()

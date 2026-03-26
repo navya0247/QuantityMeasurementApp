@@ -7,7 +7,6 @@ namespace QuantityMeasurementApp.ModelLayer.DTO
 {
     /// <summary>
     /// DTO for quantity measurement operations exchanged between API and service layers.
-    /// Contains static factory methods for entity-DTO conversion.
     /// </summary>
     public class QuantityMeasurementDTO
     {

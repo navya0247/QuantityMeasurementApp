@@ -10,17 +10,6 @@ namespace QuantityMeasurementApp.BusinessLayer.Services
 {
     /// <summary>
     /// Handles user registration and login.
-    ///
-    /// Security chain on signup:
-    ///   1. BCrypt hashes the password with work factor 12
-    ///   2. BCrypt internally generates and embeds a unique random salt
-    ///   3. Hash stored in database — plain password never saved
-    ///
-    /// Security chain on signin:
-    ///   1. Load user by email from database
-    ///   2. BCrypt.Verify(enteredPassword, storedHash)
-    ///      — BCrypt extracts embedded salt automatically
-    ///   3. If valid → generate and return JWT token
     /// </summary>
     public class AuthService : IAuthService
     {
@@ -40,9 +29,6 @@ namespace QuantityMeasurementApp.BusinessLayer.Services
 
         /// <summary>
         /// Registers a new user.
-        /// BCrypt hashes the password with work factor 12 and embeds
-        /// a unique random salt automatically inside the hash string.
-        /// No separate salt column needed — BCrypt handles it internally.
         /// </summary>
         public UserProfileDTO SignUp(SignUpDTO dto)
         {
@@ -59,8 +45,7 @@ namespace QuantityMeasurementApp.BusinessLayer.Services
             {
                 FullName     = dto.FullName.Trim(),
                 Email        = dto.Email.Trim().ToLowerInvariant(),
-                // BCrypt generates unique random salt internally per user
-                // and embeds it in the hash — no separate salt storage needed
+              
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password, workFactor: 12),
                 Role         = "User"
             };
@@ -72,8 +57,7 @@ namespace QuantityMeasurementApp.BusinessLayer.Services
 
         /// <summary>
         /// Validates credentials and returns a signed JWT token.
-        /// BCrypt.Verify extracts the embedded salt from the stored hash
-        /// and compares it with the entered password automatically.
+       
         /// </summary>
         public AuthResponseDTO SignIn(SignInDTO dto)
         {

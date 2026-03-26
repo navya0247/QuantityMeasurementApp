@@ -87,8 +87,7 @@ try
     builder.Services.AddScoped<IQuantityMeasurementService, QuantityMeasurementServiceImpl>();
 
     // - Security Services 
-    // EncryptionService: AES-256 — registered for future use (e.g. encrypt email at rest)
-    // SaltingService removed — salting is now handled directly inside AuthService
+    // EncryptionService: AES-256 — registered for future use 
     builder.Services.AddScoped<IEncryptionService, EncryptionService>();
 
     // - JWT Authentication 
@@ -186,7 +185,7 @@ try
         }
     }
 
-    // - Middleware pipeline
+    // - Middleware 
     app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
     if (app.Environment.IsDevelopment())
