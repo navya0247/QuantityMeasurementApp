@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>QuantityMeasurementApp.API</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QuantityMeasurementApp.BusinessLayer\QuantityMeasurementApp.BusinessLayer.csproj" />
+    <ProjectReference Include="..\QuantityMeasurementApp.ModelLayer\QuantityMeasurementApp.ModelLayer.csproj" />
+    <ProjectReference Include="..\QuantityMeasurementApp.RepoLayer\QuantityMeasurementApp.RepoLayer.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- JWT -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt"               Version="7.3.1" />
+
+    <!-- Password hashing -->
+    <PackageReference Include="BCrypt.Net-Next"                                Version="4.0.3" />
+
+    <!-- Swagger -->
+    <PackageReference Include="Swashbuckle.AspNetCore"                         Version="6.5.0" />
+
+    <!-- EF Core -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"         Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design"           Version="8.0.0" />
+
+    <!-- Redis -->
+    <PackageReference Include="StackExchange.Redis"                            Version="2.7.33" />
+
+    <!-- NLog file logging -->
+    <PackageReference Include="NLog"                                           Version="5.3.2" />
+    <PackageReference Include="NLog.Web.AspNetCore"                            Version="5.3.11" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+  <None Update="NLog.config">
+    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+  </None>
+</ItemGroup>
+
+  
+
+</Project>

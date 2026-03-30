@@ -1,0 +1,46 @@
+using System;
+
+/// <summary>
+/// Domain model representing measurement units and quantity logic.
+/// Used by the service layer for calculations.
+/// </summary>
+
+namespace QuantityMeasurementApp.ModelLayer.Units
+{
+    // Class representing Inches measurement
+    public class Inches
+    {
+        // Private readonly field to store value safely
+        private readonly double value;
+
+        // Constructor to initialize inches value
+        public Inches(double value)
+        {
+            this.value = value;
+        }
+
+        // Override Equals method for value comparison
+        public override bool Equals(object obj)
+        {
+            // Check same reference
+            if (this == obj)
+                return true;
+
+            // Check null or different type
+            if (obj == null || GetType() != obj.GetType())
+                return false;
+
+            // Safe casting
+            Inches other = (Inches)obj;
+
+            
+            return this.value.CompareTo(other.value) == 0;
+        }
+
+        // Override hashcode
+        public override int GetHashCode()
+        {
+            return value.GetHashCode();
+        }
+    }
+}
