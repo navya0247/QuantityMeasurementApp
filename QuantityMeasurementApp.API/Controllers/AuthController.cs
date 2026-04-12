@@ -10,6 +10,7 @@ namespace QuantityMeasurementApp.API.Controllers
     /// Handles user authentication.
     /// POST  /auth/signup   — Register
     /// POST  /auth/signin   — Login, receive JWT
+    /// POST  /auth/google   — Google OAuth sign-in / auto-register
     /// GET   /auth/profile  — Get own profile (JWT required)
     /// </summary>
     [ApiController]
@@ -17,9 +18,14 @@ namespace QuantityMeasurementApp.API.Controllers
     [Produces("application/json")]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _authService;
+        private readonly IAuthService        _authService;
+        private readonly IGoogleAuthService  _googleAuthService;
 
-        public AuthController(IAuthService authService) => _authService = authService;
+        public AuthController(IAuthService authService, IGoogleAuthService googleAuthService)
+        {
+            _authService       = authService;
+            _googleAuthService = googleAuthService;
+        }
 
         /// <summary>Register a new user account.</summary>
         [HttpPost("signup")]
@@ -43,6 +49,31 @@ namespace QuantityMeasurementApp.API.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var response = _authService.SignIn(dto);
             return Ok(response);
+        }
+
+        /// <summary>
+        /// Sign in (or auto-register) using a Google ID token.
+        /// The frontend sends the raw credential from Google Identity Services.
+        /// </summary>
+        [HttpPost("google")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(AuthResponseDTO), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> GoogleSignIn([FromBody] GoogleAuthDTO dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.IdToken))
+                return BadRequest(new { message = "Google ID token is required." });
+
+            try
+            {
+                var response = await _googleAuthService.SignInWithGoogleAsync(dto.IdToken);
+                return Ok(response);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
         }
 
         /// <summary>Returns the profile of the currently authenticated user.</summary>

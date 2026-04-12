@@ -84,6 +84,7 @@ try
     //  Business Services 
     builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
     builder.Services.AddScoped<IAuthService, AuthService>();
+    builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
     builder.Services.AddScoped<IQuantityMeasurementService, QuantityMeasurementServiceImpl>();
 
     // - Security Services 
