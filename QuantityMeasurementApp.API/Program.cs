@@ -19,6 +19,7 @@ using QuantityMeasurementApp.RepoLayer.Data;
 using QuantityMeasurementApp.RepoLayer.Interfaces;
 using QuantityMeasurementApp.RepoLayer.Repositories;
 using StackExchange.Redis;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 var logger = LogManager.Setup()
     .LoadConfiguration(builder =>
@@ -55,12 +56,15 @@ try
     builder.Services.AddControllers();
 
     //  EF Core — SQL Server (falls back to in-memory if connection fails) 
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    builder.Services.AddDbContext<AppDbContext>(options =>
-    {
-        try { options.UseSqlServer(connectionString); }
-        catch { options.UseInMemoryDatabase("QuantityMeasurementDB"); }
-    });
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+        builder.Services.AddDbContext<AppDbContext>(options =>
+        {
+            if (!string.IsNullOrEmpty(connectionString))
+                options.UseNpgsql(connectionString);   // Production: PostgreSQL
+            else
+                options.UseInMemoryDatabase("QuantityMeasurementDB"); // Fallback
+        });
 
     //  Redis - falls back to SQL Server repository if Redis not running 
     var redisConnStr = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
@@ -188,16 +192,12 @@ try
 
     // - Middleware 
     app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
-
-    if (app.Environment.IsDevelopment())
-    {
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "Quantity Measurement API v1");
             c.RoutePrefix = string.Empty; // Swagger at root URL
         });
-    }
 
     app.UseHttpsRedirection();
     app.UseCors();
