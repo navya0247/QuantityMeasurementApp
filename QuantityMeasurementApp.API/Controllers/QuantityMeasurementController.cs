@@ -9,11 +9,12 @@ using QuantityMeasurementApp.ModelLayer.Enums;
 namespace QuantityMeasurementApp.API.Controllers
 {
     /// <summary>
-    /// REST endpoints for quantity measurement operations. JWT required for all.
+    /// REST endpoints for quantity measurement operations.
+    /// Compare / Convert / Add / Subtract / Divide → open to guests (AllowAnonymous)
+    /// History / Delete → require JWT (Authorize)
     /// </summary>
     [ApiController]
     [Route("measurements")]
-    [Authorize]
     [Produces("application/json")]
     public class QuantityMeasurementController : ControllerBase
     {
@@ -22,19 +23,11 @@ namespace QuantityMeasurementApp.API.Controllers
         public QuantityMeasurementController(IQuantityMeasurementService service)
             => _service = service;
 
-        //  POST /measurements/compare 
+        // ── Operations — open to guests ──────────────────────────────
 
         /// <summary>Compare two quantities for equality.</summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     {
-        ///       "thisQuantity": { "value": 1.0,  "unit": "FEET",   "measurementType": "LengthUnit" },
-        ///       "thatQuantity": { "value": 12.0, "unit": "INCHES", "measurementType": "LengthUnit" }
-        ///     }
-        ///
-        /// </remarks>
         [HttpPost("compare")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(QuantityMeasurementDTO), 200)]
         [ProducesResponseType(400)]
         public IActionResult Compare([FromBody] QuantityInputDTO input)
@@ -44,19 +37,9 @@ namespace QuantityMeasurementApp.API.Controllers
             return Ok(_service.Compare(first, second));
         }
 
-        //  POST /measurements/convert 
-
         /// <summary>Convert a quantity to a different unit.</summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     {
-        ///       "thisQuantity": { "value": 1.0, "unit": "FEET",   "measurementType": "LengthUnit" },
-        ///       "thatQuantity": { "value": 0.0, "unit": "INCHES", "measurementType": "LengthUnit" }
-        ///     }
-        ///
-        /// </remarks>
         [HttpPost("convert")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(QuantityMeasurementDTO), 200)]
         [ProducesResponseType(400)]
         public IActionResult Convert([FromBody] QuantityInputDTO input)
@@ -67,27 +50,9 @@ namespace QuantityMeasurementApp.API.Controllers
             return Ok(_service.Convert(source, target));
         }
 
-        // POST /measurements/add
-
         /// <summary>Add two quantities. TargetUnit is optional.</summary>
-        /// <remarks>
-        /// Sample without targetUnit (result in first quantity unit):
-        ///
-        ///     {
-        ///       "thisQuantity": { "value": 1.0,  "unit": "FEET",   "measurementType": "LengthUnit" },
-        ///       "thatQuantity": { "value": 12.0, "unit": "INCHES", "measurementType": "LengthUnit" }
-        ///     }
-        ///
-        /// Sample with targetUnit (result in YARDS):
-        ///
-        ///     {
-        ///       "thisQuantity": { "value": 1.0,  "unit": "FEET",   "measurementType": "LengthUnit" },
-        ///       "thatQuantity": { "value": 12.0, "unit": "INCHES", "measurementType": "LengthUnit" },
-        ///       "targetUnit":   { "value": 0.0,  "unit": "YARDS",  "measurementType": "LengthUnit" }
-        ///     }
-        ///
-        /// </remarks>
         [HttpPost("add")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(QuantityMeasurementDTO), 200)]
         [ProducesResponseType(400)]
         public IActionResult Add([FromBody] ArithmeticInputDTO input)
@@ -101,27 +66,9 @@ namespace QuantityMeasurementApp.API.Controllers
             return Ok(_service.Add(first, second, target));
         }
 
-        //  POST /measurements/subtract 
-
         /// <summary>Subtract second quantity from first. TargetUnit is optional.</summary>
-        /// <remarks>
-        /// Sample without targetUnit:
-        ///
-        ///     {
-        ///       "thisQuantity": { "value": 2.0,   "unit": "KILOGRAM", "measurementType": "WeightUnit" },
-        ///       "thatQuantity": { "value": 500.0, "unit": "GRAM",     "measurementType": "WeightUnit" }
-        ///     }
-        ///
-        /// Sample with targetUnit (result in GRAM):
-        ///
-        ///     {
-        ///       "thisQuantity": { "value": 2.0,   "unit": "KILOGRAM", "measurementType": "WeightUnit" },
-        ///       "thatQuantity": { "value": 500.0, "unit": "GRAM",     "measurementType": "WeightUnit" },
-        ///       "targetUnit":   { "value": 0.0,   "unit": "GRAM",     "measurementType": "WeightUnit" }
-        ///     }
-        ///
-        /// </remarks>
         [HttpPost("subtract")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(QuantityMeasurementDTO), 200)]
         [ProducesResponseType(400)]
         public IActionResult Subtract([FromBody] ArithmeticInputDTO input)
@@ -132,19 +79,9 @@ namespace QuantityMeasurementApp.API.Controllers
             return Ok(_service.Subtract(first, second));
         }
 
-        //  POST /measurements/divide 
-
         /// <summary>Divide first quantity by second. Returns scalar ratio.</summary>
-        /// <remarks>
-        /// Sample request:
-        ///
-        ///     {
-        ///       "thisQuantity": { "value": 2.0, "unit": "LITRE", "measurementType": "VolumeUnit" },
-        ///       "thatQuantity": { "value": 1.0, "unit": "LITRE", "measurementType": "VolumeUnit" }
-        ///     }
-        ///
-        /// </remarks>
         [HttpPost("divide")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(QuantityMeasurementDTO), 200)]
         [ProducesResponseType(400)]
         public IActionResult Divide([FromBody] QuantityInputDTO input)
@@ -154,32 +91,37 @@ namespace QuantityMeasurementApp.API.Controllers
             return Ok(_service.Divide(first, second));
         }
 
-        //  GET endpoints 
+        // ── History — require JWT ─────────────────────────────────────
 
         /// <summary>Returns all measurement history.</summary>
         [HttpGet("history")]
+        [Authorize]
         [ProducesResponseType(typeof(List<QuantityMeasurementDTO>), 200)]
         public IActionResult GetAllHistory() => Ok(_service.GetAllMeasurements());
 
         /// <summary>Filter history by operation: COMPARE | CONVERT | ADD | SUBTRACT | DIVIDE</summary>
         [HttpGet("history/operation/{operation}")]
+        [Authorize]
         [ProducesResponseType(typeof(List<QuantityMeasurementDTO>), 200)]
         public IActionResult GetByOperation(string operation)
             => Ok(_service.GetByOperation(operation.ToUpper()));
 
         /// <summary>Filter history by type: LENGTH | WEIGHT | VOLUME | TEMPERATURE</summary>
         [HttpGet("history/type/{measureType}")]
+        [Authorize]
         [ProducesResponseType(typeof(List<QuantityMeasurementDTO>), 200)]
         public IActionResult GetByMeasureType(string measureType)
             => Ok(_service.GetByMeasureType(measureType.ToUpper()));
 
         /// <summary>Returns all records where an error occurred.</summary>
         [HttpGet("history/errored")]
+        [Authorize]
         [ProducesResponseType(typeof(List<QuantityMeasurementDTO>), 200)]
         public IActionResult GetErrored() => Ok(_service.GetErrored());
 
         /// <summary>Returns count of records for a specific operation.</summary>
         [HttpGet("count/{operation}")]
+        [Authorize]
         [ProducesResponseType(200)]
         public IActionResult GetCount(string operation)
         {
@@ -197,7 +139,7 @@ namespace QuantityMeasurementApp.API.Controllers
             return NoContent();
         }
 
-        //  Helpers 
+        // ── Helpers ───────────────────────────────────────────────────
 
         private (QuantityDTO, QuantityDTO) ResolveStandard(QuantityInputDTO input)
             => (ResolveDTO(input.ThisQuantity), ResolveDTO(input.ThatQuantity));
@@ -205,7 +147,6 @@ namespace QuantityMeasurementApp.API.Controllers
         private QuantityDTO ResolveDTO(QuantityRequestDTO req)
             => new QuantityDTO(req.Value, ResolveUnit(req.Unit, req.MeasurementType));
 
-        /// <summary>Converts unit string to enum. Case insensitive — FEET, Feet, feet all work.</summary>
         private object ResolveUnit(string unit, string measurementType)
         {
             string u = unit.ToUpperInvariant();

@@ -33,6 +33,9 @@ namespace QuantityMeasurementApp.ModelLayer.Entities
 
         [Column("is_active")]
         public bool IsActive { get; set; } = true;
+           
+        [Column("auth_provider")][MaxLength(20)]
+        public string AuthProvider { get; set; } = "Local";
 
         [Column("created_at")]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
