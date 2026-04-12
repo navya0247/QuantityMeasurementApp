@@ -199,7 +199,7 @@ try
             c.RoutePrefix = string.Empty; // Swagger at root URL
         });
 
-    app.UseHttpsRedirection();
+    //app.UseHttpsRedirection();
     app.UseCors();
     app.UseAuthentication();
     app.UseAuthorization();
